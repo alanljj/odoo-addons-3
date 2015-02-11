@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+	
+		<!-- Categories -->
+		<record id="project_category_support" model="project.category">
+			<field name="name">support</field>
+		</record>
+		<record id="project_category_subscribe" model="project.category">
+			<field name="name">subscribe</field>
+		</record>
+		<record id="project_category_confirm" model="project.category">
+			<field name="name">confirm</field>
+		</record>
+		<record id="project_category_planimod" model="project.category">
+			<field name="name">planimod</field>
+		</record>
+		<record id="project_category_minarca" model="project.category">
+            <field name="name">minarca</field>
+        </record>
+        <record id="project_category_ekwos" model="project.category">
+            <field name="name">ekwos</field>
+        </record>
+        <record id="project_category_rdiffweb" model="project.category">
+            <field name="name">rdiffweb</field>
+        </record>
+        
+        <!-- Projects -->
+        <record id="project_project_pdsl_default" model="project.project">
+            <field name="state">open</field>
+            <field name="type">normal</field>
+            <field name="name">Support</field>
+            <field name="color">3</field>
+            <field name="privacy_visibility">public</field>
+            <field name="description">Used for subscriptions and support.</field>
+        </record>
+        
+	</data>
+</openerp>
