@@ -2,7 +2,7 @@
 ##############################################################################
 #
 # PDSL fetchmail addons
-# Copyright (C) 2014 Patrik Dufresne Service Logiciel (http://www.patrikdufresne.com).
+# Copyright(C) 2015 Patrik Dufresne Service Logiciel (http://www.patrikdufresne.com).
 #
 ##############################################################################
 import logging
@@ -280,7 +280,7 @@ class project_issue(orm.Model):
             template_id = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'pdsl_fetchmail', 'pdsl_fetchmail_subscription_confirm_email_template')[1]
         
         # Send the mail
-        _logger.info("Sending confirmation mail")
+        _logger.info("sending confirmation mail")
         values = self.pool.get('email.template').generate_email(cr, uid, template_id, issue_id, context=context)
         self.pool.get('email.template').send_mail(cr, uid, template_id, issue_id, force_send=True, context=context)
             
