@@ -20,6 +20,7 @@
 ##############################################################################
 
 import time
+from openerp.tools.translate import _
 from openerp.report import report_sxw
 
 class account_invoice(report_sxw.rml_parse):
