@@ -18,43 +18,54 @@ from openerp.tools.translate import _
 
 _logger = logging.getLogger(__name__)
 
+
+def _format_body(data, filterout=[]):
+    """
+    Format dictionary object.
+    """
+    body = ""
+    for key, value in data.items():
+        if key in filterout:
+            continue
+        if key == 'message':
+            continue
+        body += "%s: %s\n" % (key, value)
+    if data.get('message'):
+        body += "\n"
+        body += data['message']
+    return body 
+
+def _parse_body(body):
+    """
+    Parse message body.
+    """
+    if not body:
+        return False
+    try:
+        # Try to convert the body as Json.
+        return json.loads(body)
+    except:
+        pass
+    
+    in_message = False
+    data = dict()
+    for line in body.splitlines():
+        if not line:
+            in_message = True
+            continue
+        if not in_message:
+            (key, sep, value) = line.partition(': ')
+            data[key] = value
+        elif data.get('message'):
+            data['message'] += line
+        else:
+            data['message'] = line
+    
+    return data
+
 class project_issue(orm.Model):
     _name = 'project.issue'
     _inherit = 'project.issue'
-
-    def create(self, cr, uid, vals, context=None):
-        """ When creating a new issue. Send confirmation mail."""
-        # Create the object.
-        new_id = super(project_issue, self).create(cr, uid, vals, context=context)
-        
-        _logger.info("COUCOU")
-        issue = self.pool.get('project.issue').browse(cr, uid, new_id, context=context)
-        _logger.info(issue.message_follower_ids)
-        
-        # Then send confirmation message.
-        if context and context.get('pdsl_send_confirmation'):
-            # Once the Task is created, send a confirmation message to the partner.
-            self._issue_send_confirm(cr, uid, new_id, context=context)
-        
-        return new_id
-
-    def _is_subscribe(self, cr, uid, issue_id, context):
-        """Check if the issue is a subscription request. Return true if subscription request."""
-        
-        # This implementation check if the issue is tag with "subscribe". 
-        try:
-            tag_id = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'pdsl_fetchmail', 'project_category_subscribe')[1]
-        except:
-            return False
-        
-        # Compare the result with the issue tags.
-        issue = self.pool.get('project.issue').browse(cr, uid, issue_id, context=context)
-        if issue and issue.categ_ids:
-            for tag in issue.categ_ids:
-                if(tag.id == tag_id):
-                    return True
-                
-        return False
 
     def _create_partner(self, cr, uid, issue_id, context=None):
         """ Create a partner for the given issue_id. This issue must have a
@@ -72,7 +83,7 @@ class project_issue(orm.Model):
             _logger.error("can't create partner for issue_id [%s]" % (issue))
             return False
         
-        data_dict = self._issue_extract_data(issue.description)
+        data_dict = _parse_body(issue.description)
         partner_pool = self.pool.get('res.partner')
         partner_data = {
             'name': data_dict.get('name') or '',
@@ -89,33 +100,26 @@ class project_issue(orm.Model):
         partner_id = partner_pool.create(cr, uid, partner_data, context=context)
         return partner_id
     
-    def _issue_extract_data(self, value):
-        """ Used to read the message body as json."""
-        # If value is not a string, return false.
-        if not value:
-            return False
-        
-        try:
-            # Try to convert the body as Json.
-            desc = html2plaintext(value)
-            return json.loads(desc)
-        except:
-            # Return false in case of error.
-            return False
-    
-    def _issue_get_context_lang(self, cr, uid, data_dict=False, context=None):
+    def _pdsl_get_context_lang(self, cr, uid, issue_id=None, context=None, data_dict=False):
         """ From the message content, determine the appropriate language.
             Either French of English. If the message doesn't provide a valid
             language, default to context. If not available, default to current
             user id language."""
+
+        # Get language from issue
+        if issue_id:
+            issue = self.pool.get('project.issue').browse(cr, uid, issue_id, context=context)
+            if issue and issue.description:
+                data_dict = _parse_body(issue.description)
         
         # Search the language code in all available language.
         if data_dict and data_dict.get('lang'):
             lang = data_dict.get('lang')
             pool_lang = self.pool.get('res.lang')
-            lang_ids = pool_lang.search(cr, uid,[('code', 'ilike', lang)], limit=1, context=context)
+            lang_ids = pool_lang.search(cr, uid, [('code', 'ilike', lang)], limit=1, context=context)
             if lang_ids:
                 lang_obj = pool_lang.browse(cr, uid, lang_ids[0], context=context)
+                _logger.info('language found [%s]' % (lang_obj.code,))
                 return lang_obj.code
         
         # Get the current user language.
@@ -143,7 +147,7 @@ class project_issue(orm.Model):
         if not project_id:
             return False
         # Use the project manager as user_id
-        _logger.debug('search user_id for project_id [%s]' % project_id)
+        _logger.debug('search for project_id [%s]' % project_id)
         project = self.pool.get('project.project').browse(cr, uid, project_id, context=context)
         if project and project.color:
             _logger.debug('color found [%s]' % project.color)
@@ -153,19 +157,8 @@ class project_issue(orm.Model):
     def _issue_get_default_description(self, cr, uid, data_dict, context):
         """ Create a pretty Json to be reused for further processing! It's
             the only way I found to store extra data. """
-        # Pretty print json
-        return json.dumps(data_dict, indent=4, sort_keys=True)
-        
-        #desc = ""
-        #for (key, value) in data_dict.iteritems():
-        #    if key in ['message', 'subject', 'email', 'action']:
-        #        continue
-        #    if value and len(value) > 0:
-        #        desc += "%s: %s\n" % (key, value)
-        #if data_dict.get('message'):
-        #    desc += "\n"
-        #    desc += data_dict.get('message')
-        #return desc
+        # Format data.
+        return _format_body(data_dict, filterout=['email', 'subject', 'product', 'action'])
         
     def _issue_get_default_name(self, cr, uid, data_dict, context):
         """ Create a proper subject name for the incident. """
@@ -268,29 +261,6 @@ class project_issue(orm.Model):
         _logger.info("tags found %s", tag_ids)
         return [(6, 0, tag_ids)]
     
-    def _issue_send_confirm(self, cr, uid, issue_id, context):
-        """ Send an appropriate confirmation message. """
-        
-        # By default return a confirmation message for support
-        template_id = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'pdsl_fetchmail', 'pdsl_fetchmail_support_confirm_email_template')[1]
-        
-        # If the message receive is explicitly related to a subscription, send a subscription confirmation message.
-        if (self._is_subscribe(cr, uid, issue_id, context=context) and
-                context['pdsl_confirmation_messageid']):
-            template_id = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'pdsl_fetchmail', 'pdsl_fetchmail_subscription_confirm_email_template')[1]
-        
-        # Send the mail
-        _logger.info("sending confirmation mail")
-        values = self.pool.get('email.template').generate_email(cr, uid, template_id, issue_id, context=context)
-        self.pool.get('email.template').send_mail(cr, uid, template_id, issue_id, force_send=True, context=context)
-            
-        # Add a log to the issue about confirmation being sent.
-        super(project_issue, self).message_post(cr, uid, issue_id,
-                                                subject=values['subject'],
-                                                body=values['body'],
-                                                type='email',
-                                                context=context)
-
     def message_new(
         self, cr, uid, msg_dict, custom_values=None, context=None):
         """
@@ -308,18 +278,18 @@ class project_issue(orm.Model):
         # set the administrator's language by default
         if context is None:
             context = {}
-        context['lang'] = self._issue_get_context_lang(cr, uid, context=context)
+        context['lang'] = self._pdsl_get_context_lang(cr, uid, context=context)
         
         # After creation, send a confirmation message
-        context['pdsl_send_confirmation'] = True
         context['pdsl_confirmation_messageid'] = msg_dict['message_id']
         
         # Read data contains in email. If no special data, just create a plain task
-        # using default implementation. 
-        data_dict = self._issue_extract_data(msg_dict.get('body'))
+        # using default implementation.
+        body = html2plaintext(msg_dict.get('body'))
+        data_dict = _parse_body(body)
         if data_dict:
-            _logger.info("json message received!")
-            context['lang'] = self._issue_get_context_lang(cr, uid, data_dict, context=context)
+            _logger.info("formated message received!")
+            context['lang'] = self._pdsl_get_context_lang(cr, uid, context=context, data_dict=data_dict)
             # Calling this method will change the custom_values
             defaults = {
                 'project_id': self._issue_get_default_project_id(cr, uid, data_dict, context=context),
@@ -354,12 +324,13 @@ class project_issue(orm.Model):
             context = {}
             
         # Read data contains in email. If no special data, just create a plain task
-        # using default implementation. 
-        data_dict = self._issue_extract_data(msg_dict.get('body'))
+        # using default implementation.
+        body = html2plaintext(msg_dict.get('body')) 
+        data_dict = _parse_body(body)
         # Check if the mail is a confirm message.
         if data_dict and data_dict.get('action') and data_dict['action'] == 'confirm':
-            _logger.info("json message received!")
-            context['lang'] = self._issue_get_context_lang(cr, uid, data_dict, context=context)
+            _logger.info("formated message received!")
+            context['lang'] = self._pdsl_get_context_lang(cr, uid, data_dict, context=context)
             # Add a confirm tags.
             update_vals = {
                 'partner_id': self._create_partner(cr, uid, issue_id=ids[0], context=context),
@@ -399,3 +370,78 @@ class project_issue(orm.Model):
         if not country_ids or not country_ids[0]:
             return False
         return country_ids[0]
+    
+    def pdsl_is_subscription(self, cr, uid, ids, context=None):
+        """
+        Check if the issue is a subscription request.
+        Return true if subscription request.
+        """
+        # TODO Also need to check the email.
+        
+        # This implementation check if the issue is tag with "subscribe". 
+        try:
+            tag_id = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'pdsl_fetchmail', 'project_category_subscribe')[1]
+        except:
+            tag_id = None
+        
+        # Compare the result with the issue tags.
+        issue = self.pool.get('project.issue').browse(cr, uid, ids[0], context=context)
+        if issue and issue.categ_ids:
+            for tag in issue.categ_ids:
+                if(tag.id == tag_id or tag.name == 'subscribe'):
+                    return True
+                
+        return False
+    
+    def pdsl_new_issue(self, cr, uid, ids, context=None):
+        """
+        Function called by the workflow when a new issue is created.
+        """
+        _logger.info("new issue was created")
+        # By default issue will be created as "New" 
+    
+    def pdsl_open(self, cr, uid, ids, context=None):
+        """
+        Called by the workflow when issue should be open.
+        This function change the issue state to "open".
+        """
+        _logger.info("new issue state=Open")
+        # Search our custom state for "Open"
+        stage_id = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'pdsl_fetchmail', 'project_tt_open')[1]
+        if not stage_id:
+            return
+        # Update the issue with Open State !
+        self.write(cr, uid, ids, {'stage_id': stage_id})
+    
+    def pdsl_send_confirm(self, cr, uid, ids, context=None, subscription=False):
+        """
+        Called by workflow to send confirmation message. Send an appropriate
+        confirmation message.
+        """
+        
+        # Try to determine the best language to be used.
+        if context is None:
+            context = {}
+        context['lang'] = self._pdsl_get_context_lang(cr, uid, ids[0], context)
+        
+        # Check if the current issue is a "subscription request".
+        # If so, send a confirmation to verify his EMAIL.
+        if subscription:
+            template_id = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'pdsl_fetchmail', 'pdsl_fetchmail_subscription_confirm_email_template')[1]
+        else:
+            template_id = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'pdsl_fetchmail', 'pdsl_fetchmail_support_confirm_email_template')[1]
+        
+        # Send the mail
+        _logger.info("sending confirmation mail")
+        values = self.pool.get('email.template').generate_email(cr, uid, template_id, ids[0], context=context)
+        self.pool.get('email.template').send_mail(cr, uid, template_id, ids[0], force_send=True, context=context)
+
+        # Add a log to the issue about confirmation being sent.
+        super(project_issue, self).message_post(cr, uid, ids[0],
+                                                subject=values['subject'],
+                                                body=values['body'],
+                                                type='email',
+                                                context=context)
+        
+    
+    

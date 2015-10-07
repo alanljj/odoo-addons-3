@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
 	<data>
-	
+
 		<!-- Categories -->
 		<record id="project_category_support" model="project.category">
 			<field name="name">support</field>
@@ -16,24 +16,109 @@
 			<field name="name">planimod</field>
 		</record>
 		<record id="project_category_minarca" model="project.category">
-            <field name="name">minarca</field>
+			<field name="name">minarca</field>
+		</record>
+		<record id="project_category_ekwos" model="project.category">
+			<field name="name">ekwos</field>
+		</record>
+		<record id="project_category_rdiffweb" model="project.category">
+			<field name="name">rdiffweb</field>
+		</record>
+		
+		<!-- Task Stages -->
+		<record id="project_tt_new" model="project.task.type">
+            <field name="sequence">1</field>
+            <field name="name">New</field>
+            <field name="state">draft</field>
+            <field name="case_default" eval="False"/>
         </record>
-        <record id="project_category_ekwos" model="project.category">
-            <field name="name">ekwos</field>
+        <record id="project_tt_waitconfirmation" model="project.task.type">
+            <field name="sequence">2</field>
+            <field name="name">Waiting for confirmation</field>
+            <field name="state">pending</field>
+            <field name="case_default" eval="True"/>
         </record>
-        <record id="project_category_rdiffweb" model="project.category">
-            <field name="name">rdiffweb</field>
-        </record>
-        
-        <!-- Projects -->
-        <record id="project_project_pdsl_default" model="project.project">
+        <record id="project_tt_open" model="project.task.type">
+            <field name="sequence">3</field>
+            <field name="name">Open</field>
             <field name="state">open</field>
-            <field name="type">normal</field>
-            <field name="name">Support</field>
-            <field name="color">3</field>
-            <field name="privacy_visibility">public</field>
-            <field name="description">Used for subscriptions and support.</field>
+            <field name="case_default" eval="True"/>
         </record>
-        
+		<record id="project_tt_done" model="project.task.type">
+            <field name="sequence">100</field>
+            <field name="name">Done</field>
+            <field name="state">done</field>
+            <field name="case_default" eval="True"/>
+            <field name="fold" eval="True"/>
+        </record>
+        <record id="project_tt_cancel" model="project.task.type">
+            <field name="sequence">200</field>
+            <field name="name">Cancelled</field>
+            <field name="state">cancelled</field>
+            <field name="case_default" eval="True"/>
+            <field name="fold" eval="True"/>
+        </record>
+
+		<!-- Projects -->
+		<record id="project_project_pdsl_default" model="project.project">
+			<field name="state">open</field>
+			<field name="type">normal</field>
+			<field name="name">Support</field>
+			<field name="color">3</field>
+			<field name="privacy_visibility">public</field>
+			<field name="description">Used for support and subscriptions.</field>
+		</record>
+
+		<!-- Workflow -->
+		<record id="pdsl_issue_workflow" model="workflow">
+			<field name="name">pdsl.issue.workflow</field>
+			<field name="osv">project.issue</field>
+			<field name="on_create">True</field>
+		</record>
+
+		<record id="pdsl_issue_new" model="workflow.activity">
+			<field name="wkf_id" ref="pdsl_issue_workflow" />
+			<field name="flow_start">True</field>
+			<field name="name">new issue</field>
+			<field name="kind">function</field>
+			<field name="action">pdsl_new_issue()</field>
+		</record>
+		<record id="pdsl_support_send_confirm" model="workflow.activity">
+			<field name="wkf_id" ref="pdsl_issue_workflow" />
+			<field name="name">send support confirm</field>
+			<field name="kind">function</field>
+			<field name="action">pdsl_send_confirm()</field>
+		</record>
+		<record id="pdsl_subscription_send_confirm" model="workflow.activity">
+			<field name="wkf_id" ref="pdsl_issue_workflow" />
+			<field name="name">send subscription confirm</field>
+			<field name="kind">function</field>
+			<field name="action">pdsl_send_confirm(subscription=True)</field>
+		</record>
+		<record id="pdsl_issue_open" model="workflow.activity">
+			<field name="wkf_id" ref="pdsl_issue_workflow" />
+			<field name="flow_stop">True</field>
+			<field name="name">open</field>
+			<field name="kind">function</field>
+			<field name="action">pdsl_open()</field>
+		</record>
+
+		<record id="trans_new_to_send_confirm" model="workflow.transition">
+			<field name="act_from" ref="pdsl_issue_new" />
+			<field name="act_to" ref="pdsl_support_send_confirm" />
+			<field name="condition">not pdsl_is_subscription()</field>
+		</record>
+		
+		<record id="trans_new_to_subscription" model="workflow.transition">
+			<field name="act_from" ref="pdsl_issue_new" />
+			<field name="act_to" ref="pdsl_subscription_send_confirm" />
+			<field name="condition">pdsl_is_subscription()</field>
+		</record>
+		
+		<record id="trans_confirm_to_open" model="workflow.transition">
+			<field name="act_from" ref="pdsl_support_send_confirm" />
+			<field name="act_to" ref="pdsl_issue_open" />
+		</record>
+		
 	</data>
 </openerp>
