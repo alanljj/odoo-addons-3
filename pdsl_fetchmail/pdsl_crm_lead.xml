@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+	
+        <!--  crm categories -->
+        <record model="crm.case.categ" id="categ_support">
+            <field name="name">Support</field>
+            <field name="section_id" ref="section_sales_department"/>
+            <field name="object_id" search="[('model','=','crm.lead')]" model="ir.model"/>
+        </record>
+        <record model="crm.case.categ" id="categ_subscription">
+            <field name="name">Subscription</field>
+            <field name="section_id" ref="section_sales_department"/>
+            <field name="object_id" search="[('model','=','crm.lead')]" model="ir.model"/>
+        </record>
+
+	</data>
+</openerp>

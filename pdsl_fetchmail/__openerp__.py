@@ -26,11 +26,12 @@ Known issues: not safe for use within a multicompany database.
     "depends": [
         'fetchmail',
         'project_issue',
+        'crm_lead',
         'account'
         ],
     "data": [
         'pdsl_fetchmail_confirm_email_template.xml',
-        'pdsl_project_data.xml'
+        'pdsl_crm_lead.xml'
         ],
     'installable': True,
     'active': False

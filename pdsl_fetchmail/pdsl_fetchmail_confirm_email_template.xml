@@ -15,7 +15,7 @@
 
 <p>Thanks for signing up for Minarca! To used our backup service, please verify your email address by clicking the link below.</p>
 
-<p><a href="http://www.patrikdufresne.com/cgi-bin/support.cgi?action=confirm&redirect=/&messageid=${ctx['pdsl_confirmation_messageid']}">CONFIRM EMAIL</a></p>
+<p><a href="http://www.patrikdufresne.com/cgi-bin/support.cgi?action=confirm&redirect=/fr/minarca/subscribe-email-confirm.html&messageid=${object.message_ids[0].message_id}">CONFIRM EMAIL</a></p>
 
 <p>Note that this link will expire in 24 hours if it's not activated.</p>
 

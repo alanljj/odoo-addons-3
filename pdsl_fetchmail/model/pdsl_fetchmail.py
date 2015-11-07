@@ -6,6 +6,7 @@
 #
 ##############################################################################
 import logging
+import re
 
 try:
     import simplejson as json
@@ -17,6 +18,9 @@ from openerp.tools import html2plaintext
 from openerp.tools.translate import _
 
 _logger = logging.getLogger(__name__)
+
+# Regex pattern used to match fields in email.
+pdsl_command_re = re.compile("^([a-z]+) *: *(.+)$", re.I + re.UNICODE)
 
 
 def _format_body(data, filterout=[]):
@@ -63,43 +67,96 @@ def _parse_body(body):
     
     return data
 
+
+class crm_lead(orm.Model):
+    """
+    Enhance reception of mail to create CRM Lead with more data.
+    """
+    _name = 'crm.lead'
+    _inherit = 'crm.lead'
+    
+    def _pdsl_find_categ(self, cr, uid, action, context=None):
+        """Search categories related to the mail."""
+        tags_pool = self.pool.get('crm.case.categ')
+        tag_ids = tags_pool.search(cr, uid, [('name', 'ilike', action)], limit=1, context=context)
+        _logger.debug("categories id %s found for [%s]", tag_ids, action)
+        return [(6, 0, tag_ids)]
+    
+    def _pdsl_find_country_id(self, cr, uid, country, context=None):
+        """ Return the appropriate country_id. """
+        _logger.debug("search for country [%s]", country)
+        country_pool = self.pool.get('res.country')
+        country_ids = country_pool.search(cr, uid, [('code', 'ilike', country)], limit=1, context=context)
+        if not country_ids or not country_ids[0]:
+            return False
+        return country_ids[0]
+    
+    def _pdsl_find_lang(self, cr, uid, lang, context=None):
+        """Search the language code in all available language."""
+        pool_lang = self.pool.get('res.lang')
+        lang_ids = pool_lang.search(cr, uid, [('code', 'ilike', lang)], limit=1, context=context)
+        if lang_ids:
+            lang_obj = pool_lang.browse(cr, uid, lang_ids[0], context=context)
+            _logger.debug('language code [%s] found for [%s]', lang_obj.code, lang)
+            return lang_obj.code
+        return False
+    
+    def message_new(self, cr, uid, msg, custom_values=None, context=None):
+        """
+        Override this mail.thread method in order to fill more data in Leads.
+        """
+        defaults = {}       
+        if custom_values is None:
+            custom_values = {}
+        if context is None:
+            context = {}
+        
+        def set_lang_context(val):
+            context['lang'] = self._pdsl_find_lang(cr, uid, lang=val, context=context)
+        
+        def set_country(val):
+            defaults['country_id'] = self._pdsl_find_country_id(cr, uid, country=val, context=context)
+        
+        def set_categ(val):
+            defaults['categ_ids'] = self._pdsl_find_country_id(cr, uid, action=val, context=context)
+        
+        # Read data contains in email. If no special data, just create a plain Leads
+        # using default implementation.
+        body = html2plaintext(msg.get('body')) if msg.get('body') else ''
+        maps = {
+            'name': 'contact_name',
+            'email': 'email',
+            'phone': 'phone',
+            'street':'street',
+            'street2':'street2',
+            'city':'city',
+            'state':'state',
+            'country': set_country,
+            'zip': 'zip',
+            'lang': set_lang_context,
+            'action': set_categ,
+        }
+        for line in body.split('\n'):
+            line = line.strip()
+            res = pdsl_command_re.match(line)
+            if res and maps.get(res.group(1).lower()):
+                key = maps.get(res.group(1).lower())
+                value = res.group(2)
+                if hasattr(key, '__call__'):
+                    key(value)
+                else:
+                    defaults[key] = value
+        
+        # Create the issue
+        defaults.update(custom_values)
+        return super(crm_lead, self).message_new(
+            cr, uid, msg, custom_values=defaults, context=context)
+    
+
 class project_issue(orm.Model):
     _name = 'project.issue'
     _inherit = 'project.issue'
 
-    def _create_partner(self, cr, uid, issue_id, context=None):
-        """ Create a partner for the given issue_id. This issue must have a
-            description containing the information to create the partner. """
-        # If issue it not provided, we can't get reference to the data to
-        # create the partner. So Skip creation! Should not happen!.
-        if not issue_id:
-            _logger.error("can't create partner for unknown issue_id")
-            return False
-        
-        # Get reference to issue object.
-        issue = self.pool.get('project.issue').browse(cr, uid, issue_id, context=context)
-        if not issue or not issue.description:
-            # This should not happen either.
-            _logger.error("can't create partner for issue_id [%s]" % (issue))
-            return False
-        
-        data_dict = _parse_body(issue.description)
-        partner_pool = self.pool.get('res.partner')
-        partner_data = {
-            'name': data_dict.get('name') or '',
-            'email': data_dict.get('email'),
-            'phone': data_dict.get('phone'),
-            'street': data_dict.get('street'),
-            'street2': data_dict.get('street2'),
-            'city': data_dict.get('city'),
-            'state_id': self._partner_get_default_state_id(cr, uid, data_dict, context=context),
-            'country_id': self._partner_get_default_country_id(cr, uid, data_dict, context=context),
-            'zip': data_dict.get('zip')
-        }
-        _logger.info("creating new partner [%s]", data_dict.get('email'))
-        partner_id = partner_pool.create(cr, uid, partner_data, context=context)
-        return partner_id
-    
     def _pdsl_get_context_lang(self, cr, uid, issue_id=None, context=None, data_dict=False):
         """ From the message content, determine the appropriate language.
             Either French of English. If the message doesn't provide a valid
@@ -158,7 +215,7 @@ class project_issue(orm.Model):
         """ Create a pretty Json to be reused for further processing! It's
             the only way I found to store extra data. """
         # Format data.
-        return _format_body(data_dict, filterout=['email', 'subject', 'product', 'action'])
+        return _format_body(data_dict, filterout=['email', 'subject', 'action'])
         
     def _issue_get_default_name(self, cr, uid, data_dict, context):
         """ Create a proper subject name for the incident. """
@@ -280,9 +337,6 @@ class project_issue(orm.Model):
             context = {}
         context['lang'] = self._pdsl_get_context_lang(cr, uid, context=context)
         
-        # After creation, send a confirmation message
-        context['pdsl_confirmation_messageid'] = msg_dict['message_id']
-        
         # Read data contains in email. If no special data, just create a plain task
         # using default implementation.
         body = html2plaintext(msg_dict.get('body'))
@@ -309,6 +363,12 @@ class project_issue(orm.Model):
         return super(project_issue, self).message_new(
             cr, uid, msg_dict, custom_values=defaults, context=context)
 
+    def message_route(self, cr, uid, message, model=None, thread_id=None,
+                      custom_values=None, context=None):
+        
+        return super(project_issue, self).message_route(cr, uid, message, model=model, thread_id=thread_id, custom_values=custom_values, context=context)
+        
+
     def message_update(self, cr, uid, ids, msg_dict, update_vals=None, context=None):
         """ Called when receiving a new message with 'Reply-To' (for an existing thread_id). """
         
@@ -333,7 +393,6 @@ class project_issue(orm.Model):
             context['lang'] = self._pdsl_get_context_lang(cr, uid, data_dict, context=context)
             # Add a confirm tags.
             update_vals = {
-                'partner_id': self._create_partner(cr, uid, issue_id=ids[0], context=context),
                 'categ_ids': self._issue_get_default_tag_ids(cr, uid, data_dict, issue_id=ids[0], context=context)
             }
         
@@ -371,41 +430,100 @@ class project_issue(orm.Model):
             return False
         return country_ids[0]
     
+    def pdsl_create_partner(self, cr, uid, ids, context=None):
+        """ Create a partner for the given issue_id. This issue must have a
+            description containing the information to create the partner. """
+        # If issue it not provided, we can't get reference to the data to
+        # create the partner. So Skip creation! Should not happen!.
+        for issue_id in ids:
+            # Get reference to issue object.
+            issue = self.pool.get('project.issue').browse(cr, uid, issue_id, context=context)
+            if not issue or not issue.description:
+                # This should not happen either.
+                _logger.error("can't create partner for issue_id [%s]" % (issue_id))
+                return False
+            
+            # Create partner entry
+            data_dict = _parse_body(issue.description)
+            partner_pool = self.pool.get('res.partner')
+            partner_data = {
+                'name': data_dict.get('name') or '',
+                'email': data_dict.get('email'),
+                'phone': data_dict.get('phone'),
+                'street': data_dict.get('street'),
+                'street2': data_dict.get('street2'),
+                'city': data_dict.get('city'),
+                'state_id': self._partner_get_default_state_id(cr, uid, data_dict, context=context),
+                'country_id': self._partner_get_default_country_id(cr, uid, data_dict, context=context),
+                'zip': data_dict.get('zip')
+            }
+            _logger.info("creating new partner [%s]", data_dict.get('email'))
+            partner_id = partner_pool.create(cr, uid, partner_data, context=context)
+            
+            # Assign pattern to the issue.
+            self.write(cr, uid, ids, {'partner_id': partner_id})
+    
+    def pdsl_create_user(self, cr, uid, ids, context):
+        """
+        Used to create the user in LDAP.
+        """
+        _logger.info("creating new user in Minarca")
+        return True
+    
+    def pdsl_is_category(self, cr, uid, issue_id, context=None, category=None):
+        """
+        Check if the given issue is tag with given category.
+        """  
+        # Compare the result with the issue tags.
+        issue = self.pool.get('project.issue').browse(cr, uid, issue_id, context=context)
+        if not issue or not issue.categ_ids:
+            return False
+
+        for tag in issue.categ_ids:
+            if tag.name == category:
+                return True
+
+        return False
+    
     def pdsl_is_subscription(self, cr, uid, ids, context=None):
         """
         Check if the issue is a subscription request.
         Return true if subscription request.
         """
-        # TODO Also need to check the email.
-        
-        # This implementation check if the issue is tag with "subscribe". 
-        try:
-            tag_id = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'pdsl_fetchmail', 'project_category_subscribe')[1]
-        except:
-            tag_id = None
-        
-        # Compare the result with the issue tags.
-        issue = self.pool.get('project.issue').browse(cr, uid, ids[0], context=context)
-        if issue and issue.categ_ids:
-            for tag in issue.categ_ids:
-                if(tag.id == tag_id or tag.name == 'subscribe'):
-                    return True
-                
-        return False
+        return self.pdsl_is_category(cr, uid, ids[0], context=context, category='subscribe')
+
+    def pdsl_is_confirmed(self, cr, uid, ids, context=None):
+        """
+        Check if the issue is a subscription request.
+        Return true if subscription request.
+        """
+        return self.pdsl_is_category(cr, uid, ids[0], context=context, category='confirm')
+    
+    def pdsl_is_support(self, cr, uid, ids, context=None):
+        """
+        Check if the issue is a subscription request.
+        Return true if subscription request.
+        """
+        return self.pdsl_is_category(cr, uid, ids[0], context=context, category='support')
     
     def pdsl_new_issue(self, cr, uid, ids, context=None):
         """
         Function called by the workflow when a new issue is created.
         """
         _logger.info("new issue was created")
-        # By default issue will be created as "New" 
+        # Search our custom state for "Open"
+        stage_id = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'pdsl_fetchmail', 'project_tt_new')[1]
+        if not stage_id:
+            return
+        # Update the issue with Open State !
+        self.write(cr, uid, ids, {'stage_id': stage_id})
     
     def pdsl_open(self, cr, uid, ids, context=None):
         """
         Called by the workflow when issue should be open.
         This function change the issue state to "open".
         """
-        _logger.info("new issue state=Open")
+        _logger.info("issue open")
         # Search our custom state for "Open"
         stage_id = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'pdsl_fetchmail', 'project_tt_open')[1]
         if not stage_id:
