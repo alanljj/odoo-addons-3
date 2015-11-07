@@ -26,7 +26,7 @@ Known issues: not safe for use within a multicompany database.
     "depends": [
         'fetchmail',
         'project_issue',
-        'crm_lead',
+        'crm',
         'account'
         ],
     "data": [

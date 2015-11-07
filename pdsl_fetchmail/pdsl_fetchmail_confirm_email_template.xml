@@ -6,9 +6,9 @@
             <field name="email_from"><![CDATA[${object.company_id.name} <${object.company_id.email|safe}>]]></field>
             <field name="subject">Welcome to Minarca! Please Confirm Your Email</field>
             <field name="email_to">${object.email_from|safe}</field>
-            <field name="reply_to">noreply@patrikdufresne.com</field>
+            <field name="reply_to">support@patrikdufresne.com</field>
             <field name="lang">${ctx.get('lang') or object.partner_id.lang}</field>
-            <field name="model_id" ref="model_project_issue"/>
+            <field name="model_id" search="[('model','=','crm.lead')]" model="ir.model"/>
             <field name="auto_delete" eval="True"/>
             <field name="body_html"><![CDATA[
 <p>Welcome to Minarca!<p>
@@ -22,17 +22,26 @@
 <p>Request ID: ${object.id}</p>
 
 <p>Thank you,<br>
-Patrik Dufresne Service Logiciel</p>]]></field>
+Patrik Dufresne Service Logiciel inc.</p>
+
+<p>--</p>
+<p>Original message received:</p>
+
+<pre>
+${object.description}
+</pre>]]></field>
         </record>
         <record id="pdsl_fetchmail_support_confirm_email_template" model="email.template">
             <field name="name">Confirm support</field>
             <field name="email_from"><![CDATA[${object.company_id.name} <${object.company_id.email|safe}>]]></field>
-            <field name="subject">Confirm: ${object.name}</field>
+            <field name="subject">Confirm ${object.name} [ref. ${object.id}]</field>
             <field name="email_to">${object.email_from|safe}</field>
+            <field name="reply_to">support@patrikdufresne.com</field>
             <field name="lang">${ctx.get('lang') or object.partner_id.lang}</field>
-            <field name="model_id" ref="model_project_issue"/>
+            <field name="model_id" search="[('model','=','crm.lead')]" model="ir.model"/>
             <field name="auto_delete" eval="True"/>
             <field name="body_html"><![CDATA[
+
 <p>We have received your request and we will respond as quickly as possible.<p>
 
 <p>We usually try to respond to requests for assistance within 48 hours, Monday to Friday.</p>
@@ -40,7 +49,14 @@ Patrik Dufresne Service Logiciel</p>]]></field>
 <p>Request ID: ${object.id}</p>
 
 <p>Thank you,<br>
-Patrik Dufresne Service Logiciel</p>]]></field>
+Patrik Dufresne Service Logiciel inc.</p>
+
+<p>--</p>
+<p>Original message received:</p>
+
+<pre>
+${object.description}
+</pre>]]></field>
         </record>
         
     </data>

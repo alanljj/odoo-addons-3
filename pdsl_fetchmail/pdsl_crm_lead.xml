@@ -1,18 +1,80 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
 	<data>
-	
-        <!--  crm categories -->
-        <record model="crm.case.categ" id="categ_support">
-            <field name="name">Support</field>
-            <field name="section_id" ref="section_sales_department"/>
-            <field name="object_id" search="[('model','=','crm.lead')]" model="ir.model"/>
-        </record>
-        <record model="crm.case.categ" id="categ_subscription">
-            <field name="name">Subscription</field>
-            <field name="section_id" ref="section_sales_department"/>
-            <field name="object_id" search="[('model','=','crm.lead')]" model="ir.model"/>
-        </record>
+
+		<!-- crm categories -->
+		<record model="crm.case.categ" id="categ_support">
+			<field name="name">Support</field>
+			<field name="section_id" ref="crm.section_sales_department" />
+			<field name="object_id" search="[('model','=','crm.lead')]"
+				model="ir.model" />
+		</record>
+		<record model="crm.case.categ" id="categ_subscription">
+			<field name="name">Subscribe</field>
+			<field name="section_id" ref="crm.section_sales_department" />
+			<field name="object_id" search="[('model','=','crm.lead')]"
+				model="ir.model" />
+		</record>
+
+		<!-- Workflow -->
+		<record id="pdsl_lead_workflow" model="workflow">
+			<field name="name">pdsl.crm.lead.workflow</field>
+			<field name="osv">crm.lead</field>
+			<field name="on_create">True</field>
+		</record>
+
+		<!-- Workflow Activities -->
+		<record id="pdsl_lead_new" model="workflow.activity">
+			<field name="wkf_id" ref="pdsl_lead_workflow" />
+			<field name="flow_start">True</field>
+			<field name="name">new lead</field>
+			<field name="kind">function</field>
+			<field name="action">pdsl_new()</field>
+		</record>
+		<record id="pdsl_support_send_confirm" model="workflow.activity">
+			<field name="wkf_id" ref="pdsl_lead_workflow" />
+			<field name="name">send support confirm</field>
+			<field name="kind">function</field>
+			<field name="action">pdsl_send_confirm()</field>
+		</record>
+		<record id="pdsl_subscription_send_confirm" model="workflow.activity">
+			<field name="wkf_id" ref="pdsl_lead_workflow" />
+			<field name="name">send subscription confirm</field>
+			<field name="kind">function</field>
+			<field name="action">pdsl_send_confirm(subscription=True)</field>
+		</record>
+		<record id="pdsl_lead_stop" model="workflow.activity">
+			<field name="wkf_id" ref="pdsl_lead_workflow" />
+			<field name="flow_stop">True</field>
+			<field name="name">stop lead</field>
+			<field name="kind">function</field>
+			<field name="action">pdsl_stop()</field>
+		</record>
+
+		<!-- Workflow Transitions -->
+		<record id="trans_new_to_send_confirm" model="workflow.transition">
+			<field name="act_from" ref="pdsl_lead_new" />
+			<field name="act_to" ref="pdsl_support_send_confirm" />
+			<field name="condition">message_ids and pdsl_is_support()</field>
+		</record>
+		<record id="trans_new_to_subscription" model="workflow.transition">
+			<field name="act_from" ref="pdsl_lead_new" />
+			<field name="act_to" ref="pdsl_subscription_send_confirm" />
+			<field name="condition">message_ids and pdsl_is_subscribe()</field>
+		</record>
+		<record id="trans_new_to_open" model="workflow.transition">
+			<field name="act_from" ref="pdsl_lead_new" />
+			<field name="act_to" ref="pdsl_lead_stop" />
+			<field name="condition">message_ids and not pdsl_is_subscribe() and not pdsl_is_support()</field>
+		</record>
+		<record id="trans_confirm_to_create_partner" model="workflow.transition">
+			<field name="act_from" ref="pdsl_subscription_send_confirm" />
+			<field name="act_to" ref="pdsl_lead_stop" />
+		</record>
+		<record id="trans_confirm_to_open" model="workflow.transition">
+			<field name="act_from" ref="pdsl_support_send_confirm" />
+			<field name="act_to" ref="pdsl_lead_stop" />
+		</record>
 
 	</data>
 </openerp>
