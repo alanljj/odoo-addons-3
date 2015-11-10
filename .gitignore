@@ -1,4 +1,27 @@
+# Eclipse files
 .settings
 .project
 .pydevproject
 .externalToolBuilders
+
+# Python build file.
+*.py[co]
+*.egg
+*.egg-info
+dist
+build
+eggs
+parts
+bin
+var
+sdist
+develop-eggs
+.installed.cfg
+
+# Unit test / coverage reports
+.coverage
+.tox
+coverage.xml
+nosetests.xml
+setup.py.bak
+sonar-project.properties
