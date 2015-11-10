@@ -15,6 +15,12 @@
 			<field name="object_id" search="[('model','=','crm.lead')]"
 				model="ir.model" />
 		</record>
+        <record model="crm.case.categ" id="categ_confirm">
+            <field name="name">Confirm</field>
+            <field name="section_id" ref="crm.section_sales_department" />
+            <field name="object_id" search="[('model','=','crm.lead')]"
+                model="ir.model" />
+        </record>
 
 		<!-- Workflow -->
 		<record id="pdsl_lead_workflow" model="workflow">
