@@ -15,7 +15,7 @@ except ImportError:
     import json  # noqa
 
 from openerp import tools
-from openerp.osv import orm
+from openerp import models
 from openerp.tools.translate import _
 
 _logger = logging.getLogger(__name__)
@@ -69,7 +69,7 @@ def _parse_body(body):
     return data
 
 
-class crm_lead(orm.Model):
+class crm_lead(models.Model):
     """
     Enhance reception of mail to create CRM Lead with more data.
     """

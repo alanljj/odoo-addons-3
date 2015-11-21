@@ -8,7 +8,7 @@
 {
     "name": "PDSL Fetchmail",
     "version": "8.0.1",
-    "author": "Patrik Dufresne",
+    "author": "Patrik Dufresne Service Logiciel inc.",
     "category": 'Tools',
     "description": """
 
@@ -30,7 +30,8 @@ Known issues: not safe for use within a multicompany database.
         ],
     "data": [
         'pdsl_fetchmail_confirm_email_template.xml',
-        'pdsl_crm_lead.xml'
+        'pdsl_crm_lead_action_rule.xml',
+        'pdsl_crm_lead.xml',
         ],
     'installable': True,
     'active': False

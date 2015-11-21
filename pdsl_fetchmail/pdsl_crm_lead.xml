@@ -5,21 +5,18 @@
 		<!-- crm categories -->
 		<record model="crm.case.categ" id="categ_support">
 			<field name="name">Support</field>
-			<field name="section_id" ref="crm.section_sales_department" />
-			<field name="object_id" search="[('model','=','crm.lead')]"
-				model="ir.model" />
+			<field name="section_id" ref="sales_team.section_sales_department"/>
+            <field name="object_id" search="[('model','=','crm.lead')]" model="ir.model"/>
 		</record>
 		<record model="crm.case.categ" id="categ_subscription">
 			<field name="name">Subscribe</field>
-			<field name="section_id" ref="crm.section_sales_department" />
-			<field name="object_id" search="[('model','=','crm.lead')]"
-				model="ir.model" />
+			<field name="section_id" ref="sales_team.section_sales_department"/>
+            <field name="object_id" search="[('model','=','crm.lead')]" model="ir.model"/>
 		</record>
         <record model="crm.case.categ" id="categ_confirm">
             <field name="name">Confirm</field>
-            <field name="section_id" ref="crm.section_sales_department" />
-            <field name="object_id" search="[('model','=','crm.lead')]"
-                model="ir.model" />
+            <field name="section_id" ref="sales_team.section_sales_department"/>
+            <field name="object_id" search="[('model','=','crm.lead')]" model="ir.model"/>
         </record>
 
 		<!-- Workflow -->
