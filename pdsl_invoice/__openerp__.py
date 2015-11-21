@@ -20,14 +20,14 @@
 ##############################################################################
 {
     "name": "PDSL Invoices",
-    "version": "0.1",
+    "version": "8.0.1",
     "author": "Patrik Dufresne",
     "category": 'Tools',
     "description": """
 
 This module provide a custom invoice model.
 
-This module is compatible with OpenERP 7.0.
+This module is compatible with OpenERP 8.0.
 
 """,
     "depends": [

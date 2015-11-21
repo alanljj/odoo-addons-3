@@ -7,7 +7,7 @@
 ##############################################################################
 {
     "name": "PDSL Fetchmail",
-    "version": "0.1",
+    "version": "8.0.1",
     "author": "Patrik Dufresne",
     "category": 'Tools',
     "description": """
@@ -19,13 +19,12 @@ email's sender address along with all the partner's financial settings.
 
 A partner is created from data inside the mail (json).
 
-This module is compatible with OpenERP 7.0.
+This module is compatible with OpenERP 8.0.
 
 Known issues: not safe for use within a multicompany database.
 """,
     "depends": [
         'fetchmail',
-        'project_issue',
         'crm',
         'account'
         ],
