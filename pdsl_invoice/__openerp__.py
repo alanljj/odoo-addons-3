@@ -34,7 +34,8 @@ This module is compatible with OpenERP 8.0.
         'account',
         ],
     "data": [
-        'pdsl_invoice_data.xml'
+        'pdsl_invoice_data.xml',
+        'views/report_invoice.xml',
         ],
     'installable': True,
     'active': False

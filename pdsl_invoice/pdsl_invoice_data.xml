@@ -1,16 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
-	<data>
-        <report
-            auto="False"
-            id="account.account_invoices"
-            model="account.invoice"
-            name="new.account.invoice"
-            rml="pdsl_invoice/report/account_print_invoice.rml"
-            string="Invoices"
-            attachment="(object.state in ('open','paid')) and ('INV'+(object.number or '').replace('/','')+'.pdf')"
-            attachment_use="True"
-            usage="default"
-            /> 
-	</data>
+<data>
+
+<!-- Define customer paper format four invoice -->
+<record id="paperformat_invoice" model="report.paperformat">
+    <field name="name">US Letter (for invoice)</field>
+    <field name="default" eval="True" />
+    <field name="format">Letter</field>
+    <field name="page_height">0</field>
+    <field name="page_width">0</field>
+    <field name="orientation">Portrait</field>
+    <field name="margin_top">70</field>
+    <field name="margin_bottom">20</field>
+    <field name="margin_left">7</field>
+    <field name="margin_right">7</field>
+    <field name="header_line" eval="False" />
+    <field name="header_spacing">70</field>
+    <field name="dpi">90</field>
+</record>
+
+<!-- Replace existing invoice report by ours. -->
+<report
+    id="account.account_invoices"
+    model="account.invoice"
+    string="Invoices"
+    report_type="qweb-pdf"
+    name="pdsl_invoice.report_invoice"
+    file="pdsl_invoice.report_invoice"
+    attachment_use="False"
+    attachment="(object.state in ('open','paid')) and ('INV'+(object.number or '').replace('/','')+'.pdf')"
+    />
+
+<!-- Define the paperformat of the repport. -->
+<record id="account.account_invoices" model="ir.actions.report.xml">
+    <field name="paperformat_id" ref="pdsl_invoice.paperformat_invoice"/>
+</record>
+
+</data>
 </openerp>
