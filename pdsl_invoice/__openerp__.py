@@ -8,7 +8,7 @@
 {
     "name": "PDSL Invoices",
     "version": "8.0.1",
-    "author": "Patrik Dufresne",
+    "author": "Patrik Dufresne Service Logiciel inc.",
     "category": 'Tools',
     "description": """
 

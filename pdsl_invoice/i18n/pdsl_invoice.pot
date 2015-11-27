@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: OpenERP Server 7.0\n"
+"Project-Id-Version: OpenERP Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-14 00:10+0000\n"
-"PO-Revision-Date: 2014-08-14 00:10+0000\n"
+"POT-Creation-Date: 2015-11-26 19:37+0400\n"
+"PO-Revision-Date: 2015-11-26 19:37+0400\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,111 +16,131 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: pdsl_invoice
-#: report:new.account.invoice:0
-msgid "Taxes"
+#: view:website:pdsl_invoice.report_invoice_document
+msgid "Amount"
 msgstr ""
 
 #. module: pdsl_invoice
-#: report:new.account.invoice:0
-msgid "Invoice Date"
+#: view:website:pdsl_invoice.report_invoice_document
+msgid "Base"
 msgstr ""
 
 #. module: pdsl_invoice
-#: report:new.account.invoice:0
-msgid "TIN:"
-msgstr ""
-
-#. module: pdsl_invoice
-#: report:new.account.invoice:0
-msgid "Invoice"
-msgstr ""
-
-#. module: pdsl_invoice
-#: report:new.account.invoice:0
-msgid "Description"
-msgstr ""
-
-#. module: pdsl_invoice
-#: report:new.account.invoice:0
-msgid "Tax"
-msgstr ""
-
-#. module: pdsl_invoice
-#: report:new.account.invoice:0
-msgid "Disc.(%)"
-msgstr ""
-
-#. module: pdsl_invoice
-#: report:new.account.invoice:0
-msgid "Draft Invoice"
-msgstr ""
-
-#. module: pdsl_invoice
-#: report:new.account.invoice:0
-msgid "Unit Price"
-msgstr ""
-
-#. module: pdsl_invoice
-#: report:new.account.invoice:0
+#: view:website:pdsl_invoice.report_invoice_document
 msgid "Cancelled Invoice"
 msgstr ""
 
 #. module: pdsl_invoice
-#: report:new.account.invoice:0
-msgid "Quantity"
+#: view:website:pdsl_invoice.report_invoice_document
+msgid "Comment:"
 msgstr ""
 
 #. module: pdsl_invoice
-#: report:new.account.invoice:0
+#: view:website:pdsl_invoice.report_invoice_document
+msgid "Customer Code:"
+msgstr ""
+
+#. module: pdsl_invoice
+#: view:website:pdsl_invoice.report_invoice_document
+msgid "Description"
+msgstr ""
+
+#. module: pdsl_invoice
+#: view:website:pdsl_invoice.report_invoice_document
+msgid "Description:"
+msgstr ""
+
+#. module: pdsl_invoice
+#: view:website:pdsl_invoice.report_invoice_document
+msgid "Discount (%)"
+msgstr ""
+
+#. module: pdsl_invoice
+#: view:website:pdsl_invoice.report_invoice_document
+msgid "Draft Invoice"
+msgstr ""
+
+#. module: pdsl_invoice
+#: view:website:pdsl_invoice.report_invoice_document
 msgid "Fiscal Position Remark:"
 msgstr ""
 
 #. module: pdsl_invoice
-#: report:new.account.invoice:0
-msgid "Supplier Refund"
+#: view:website:pdsl_invoice.report_invoice_document
+msgid "Invoice"
 msgstr ""
 
 #. module: pdsl_invoice
-#: report:new.account.invoice:0
-msgid "Fax:"
+#: view:website:pdsl_invoice.report_invoice_document
+msgid "Invoice Date:"
 msgstr ""
 
 #. module: pdsl_invoice
-#: report:new.account.invoice:0
-msgid "Total:"
+#: view:website:pdsl_invoice.report_invoice_document
+msgid "PRO-FORMA"
 msgstr ""
 
 #. module: pdsl_invoice
-#: report:new.account.invoice:0
-msgid "Taxes:"
+#: view:website:pdsl_invoice.report_invoice_document
+msgid "Payment Term:"
 msgstr ""
 
 #. module: pdsl_invoice
-#: report:new.account.invoice:0
-msgid "Price"
+#: view:website:pdsl_invoice.report_invoice_document
+msgid "Quantity"
 msgstr ""
 
 #. module: pdsl_invoice
-#: report:new.account.invoice:0
-msgid "Net Total:"
+#: view:website:pdsl_invoice.report_invoice_document
+msgid "Reference:"
 msgstr ""
 
 #. module: pdsl_invoice
-#: report:new.account.invoice:0
-msgid "Tel.:"
-msgstr ""
-
-#. module: pdsl_invoice
-#: report:new.account.invoice:0
-msgid "Supplier Invoice"
-msgstr ""
-
-#. module: pdsl_invoice
-#: report:new.account.invoice:0
+#: view:website:pdsl_invoice.report_invoice_document
 msgid "Refund"
 msgstr ""
 
 #. module: pdsl_invoice
-#: report:new.account.invoice:0
-msgid "Payment term:"
+#: view:website:pdsl_invoice.report_invoice_document
+msgid "Source:"
+msgstr ""
+
+#. module: pdsl_invoice
+#: view:website:pdsl_invoice.report_invoice_document
+msgid "Supplier Invoice"
+msgstr ""
+
+#. module: pdsl_invoice
+#: view:website:pdsl_invoice.report_invoice_document
+msgid "Supplier Refund"
+msgstr ""
+
+#. module: pdsl_invoice
+#: view:website:pdsl_invoice.report_invoice_document
+msgid "TIN:"
+msgstr ""
+
+#. module: pdsl_invoice
+#: view:website:pdsl_invoice.report_invoice_document
+msgid "Tax"
+msgstr ""
+
+#. module: pdsl_invoice
+#: view:website:pdsl_invoice.report_invoice_document
+msgid "Taxes"
+msgstr ""
+
+#. module: pdsl_invoice
+#: view:website:pdsl_invoice.report_invoice_document
+msgid "Total"
+msgstr ""
+
+#. module: pdsl_invoice
+#: view:website:pdsl_invoice.report_invoice_document
+msgid "Total Without Taxes"
+msgstr ""
+
+#. module: pdsl_invoice
+#: view:website:pdsl_invoice.report_invoice_document
+msgid "Unit Price"
 msgstr ""

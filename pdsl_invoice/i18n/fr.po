@@ -3,10 +3,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: OpenERP Server 7.0-9e82ba1\n"
+"Project-Id-Version: OpenERP Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-13 20:07+0000\n"
-"PO-Revision-Date: 2015-04-13 20:07+0000\n"
+"POT-Creation-Date: 2015-11-26 19:37+0400\n"
+"PO-Revision-Date: 2015-11-26 19:37+0400\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -15,111 +15,131 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: pdsl_invoice
-#: report:new.account.invoice:0
-msgid "Taxes"
-msgstr "Taxes"
+#: view:website:pdsl_invoice.report_invoice_document
+msgid "Amount"
+msgstr "Montant"
 
 #. module: pdsl_invoice
-#: report:new.account.invoice:0
-msgid "Invoice Date"
-msgstr "Date de facture"
+#: view:website:pdsl_invoice.report_invoice_document
+msgid "Base"
+msgstr "Base de calcul"
 
 #. module: pdsl_invoice
-#: report:new.account.invoice:0
-msgid "TIN:"
-msgstr ""
+#: view:website:pdsl_invoice.report_invoice_document
+msgid "Cancelled Invoice"
+msgstr "Facture annulée"
 
 #. module: pdsl_invoice
-#: report:new.account.invoice:0
-msgid "Invoice"
-msgstr "Facture"
+#: view:website:pdsl_invoice.report_invoice_document
+msgid "Comment:"
+msgstr "Note:"
 
 #. module: pdsl_invoice
-#: report:new.account.invoice:0
+#: view:website:pdsl_invoice.report_invoice_document
+msgid "Customer Code:"
+msgstr "Référence client:"
+
+#. module: pdsl_invoice
+#: view:website:pdsl_invoice.report_invoice_document
 msgid "Description"
 msgstr "Description"
 
 #. module: pdsl_invoice
-#: report:new.account.invoice:0
-msgid "Tax"
-msgstr "Taxes"
+#: view:website:pdsl_invoice.report_invoice_document
+msgid "Description:"
+msgstr "Description:"
 
 #. module: pdsl_invoice
-#: report:new.account.invoice:0
-msgid "Disc.(%)"
-msgstr "Rabais.(%)"
+#: view:website:pdsl_invoice.report_invoice_document
+msgid "Discount (%)"
+msgstr "Remise (%)"
 
 #. module: pdsl_invoice
-#: report:new.account.invoice:0
+#: view:website:pdsl_invoice.report_invoice_document
 msgid "Draft Invoice"
 msgstr "Facture Brouillon"
 
 #. module: pdsl_invoice
-#: report:new.account.invoice:0
-msgid "Unit Price"
-msgstr "Prix unit."
+#: view:website:pdsl_invoice.report_invoice_document
+msgid "Fiscal Position Remark:"
+msgstr "Remarque de Position Fiscale:"
 
 #. module: pdsl_invoice
-#: report:new.account.invoice:0
-msgid "Cancelled Invoice"
-msgstr "Facture Annulée"
+#: view:website:pdsl_invoice.report_invoice_document
+msgid "Invoice"
+msgstr "Facture"
 
 #. module: pdsl_invoice
-#: report:new.account.invoice:0
+#: view:website:pdsl_invoice.report_invoice_document
+msgid "Invoice Date:"
+msgstr "Date de facture:"
+
+#. module: pdsl_invoice
+#: view:website:pdsl_invoice.report_invoice_document
+msgid "PRO-FORMA"
+msgstr "PRO-FORMA"
+
+#. module: pdsl_invoice
+#: view:website:pdsl_invoice.report_invoice_document
+msgid "Payment Term:"
+msgstr "Conditions de règlement:"
+
+#. module: pdsl_invoice
+#: view:website:pdsl_invoice.report_invoice_document
 msgid "Quantity"
 msgstr "Quantité"
 
 #. module: pdsl_invoice
-#: report:new.account.invoice:0
-msgid "Fiscal Position Remark:"
-msgstr "Observation sur le régime fiscal :"
+#: view:website:pdsl_invoice.report_invoice_document
+msgid "Reference:"
+msgstr "Référence:"
 
 #. module: pdsl_invoice
-#: report:new.account.invoice:0
-msgid "Supplier Refund"
-msgstr "Avoir Fournisseur"
-
-#. module: pdsl_invoice
-#: report:new.account.invoice:0
-msgid "Fax:"
-msgstr "Fax :"
-
-#. module: pdsl_invoice
-#: report:new.account.invoice:0
-msgid "Total:"
-msgstr "Total :"
-
-#. module: pdsl_invoice
-#: report:new.account.invoice:0
-msgid "Taxes:"
-msgstr "Taxes :"
-
-#. module: pdsl_invoice
-#: report:new.account.invoice:0
-msgid "Price"
-msgstr "Prix"
-
-#. module: pdsl_invoice
-#: report:new.account.invoice:0
-msgid "Net Total:"
-msgstr "Total Hors-Taxes :"
-
-#. module: pdsl_invoice
-#: report:new.account.invoice:0
-msgid "Tel.:"
-msgstr "Tél. :"
-
-#. module: pdsl_invoice
-#: report:new.account.invoice:0
-msgid "Supplier Invoice"
-msgstr "Facture Fournisseur"
-
-#. module: pdsl_invoice
-#: report:new.account.invoice:0
+#: view:website:pdsl_invoice.report_invoice_document
 msgid "Refund"
 msgstr "Avoir"
 
 #. module: pdsl_invoice
-#: report:new.account.invoice:0
-msgid "Payment term:"
-msgstr "Conditions de règlement : "
+#: view:website:pdsl_invoice.report_invoice_document
+msgid "Source:"
+msgstr "Source :"
+
+#. module: pdsl_invoice
+#: view:website:pdsl_invoice.report_invoice_document
+msgid "Supplier Invoice"
+msgstr "Facture fournisseur"
+
+#. module: pdsl_invoice
+#: view:website:pdsl_invoice.report_invoice_document
+msgid "Supplier Refund"
+msgstr "Avoir fournisseur"
+
+#. module: pdsl_invoice
+#: view:website:pdsl_invoice.report_invoice_document
+msgid "TIN:"
+msgstr "Numéro TVA :"
+
+#. module: pdsl_invoice
+#: view:website:pdsl_invoice.report_invoice_document
+msgid "Tax"
+msgstr "Taxes"
+
+#. module: pdsl_invoice
+#: view:website:pdsl_invoice.report_invoice_document
+msgid "Taxes"
+msgstr "Taxes"
+
+#. module: pdsl_invoice
+#: view:website:pdsl_invoice.report_invoice_document
+msgid "Total"
+msgstr "Total"
+
+#. module: pdsl_invoice
+#: view:website:pdsl_invoice.report_invoice_document
+msgid "Total Without Taxes"
+msgstr "Total HT"
+
+#. module: pdsl_invoice
+#: view:website:pdsl_invoice.report_invoice_document
+msgid "Unit Price"
+msgstr "Prix unitaire"
