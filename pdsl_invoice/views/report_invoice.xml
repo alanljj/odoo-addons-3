@@ -32,9 +32,9 @@
         <t t-set="company" t-value="res_company"></t>
     </t>
 
-    <t t-call="external_layout_header" />
+    <t t-call="pdsl_invoice.external_layout_header" />
     <t t-raw="0" />
-    <t t-call="external_layout_footer" />
+    <t t-call="pdsl_invoice.external_layout_footer" />
 </template>
 
 <template id="external_layout_header">
@@ -103,7 +103,7 @@
                     <span t-field="o.date_invoice"/>
                 </div>
                 </div>
-                <div class="col-xs-6" t-if="o.partner_id.ref">
+                <div class="col-xs-6" t-if="o.partner_id">
                     <address t-field="o.partner_id" t-field-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;,&quot;name&quot;,&quot;phone&quot;], &quot;no_marker&quot;: true}"/>
                 </div>
             </div>
