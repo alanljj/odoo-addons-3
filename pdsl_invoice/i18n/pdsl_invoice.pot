@@ -77,6 +77,11 @@ msgstr ""
 
 #. module: pdsl_invoice
 #: view:website:pdsl_invoice.report_invoice_document
+msgid "Invoiced To:"
+msgstr ""
+
+#. module: pdsl_invoice
+#: view:website:pdsl_invoice.report_invoice_document
 msgid "PRO-FORMA"
 msgstr ""
 

@@ -32,12 +32,12 @@ msgstr "Facture annulée"
 #. module: pdsl_invoice
 #: view:website:pdsl_invoice.report_invoice_document
 msgid "Comment:"
-msgstr "Note:"
+msgstr "Note : "
 
 #. module: pdsl_invoice
 #: view:website:pdsl_invoice.report_invoice_document
 msgid "Customer Code:"
-msgstr "Référence client:"
+msgstr "Référence client : "
 
 #. module: pdsl_invoice
 #: view:website:pdsl_invoice.report_invoice_document
@@ -47,7 +47,7 @@ msgstr "Description"
 #. module: pdsl_invoice
 #: view:website:pdsl_invoice.report_invoice_document
 msgid "Description:"
-msgstr "Description:"
+msgstr "Description : "
 
 #. module: pdsl_invoice
 #: view:website:pdsl_invoice.report_invoice_document
@@ -62,7 +62,7 @@ msgstr "Facture Brouillon"
 #. module: pdsl_invoice
 #: view:website:pdsl_invoice.report_invoice_document
 msgid "Fiscal Position Remark:"
-msgstr "Remarque de Position Fiscale:"
+msgstr "Remarque de Position Fiscale : "
 
 #. module: pdsl_invoice
 #: view:website:pdsl_invoice.report_invoice_document
@@ -72,7 +72,12 @@ msgstr "Facture"
 #. module: pdsl_invoice
 #: view:website:pdsl_invoice.report_invoice_document
 msgid "Invoice Date:"
-msgstr "Date de facture:"
+msgstr "Date de facture : "
+
+#. module: pdsl_invoice
+#: view:website:pdsl_invoice.report_invoice_document
+msgid "Invoiced To:"
+msgstr "Facturé à : "
 
 #. module: pdsl_invoice
 #: view:website:pdsl_invoice.report_invoice_document
@@ -82,7 +87,7 @@ msgstr "PRO-FORMA"
 #. module: pdsl_invoice
 #: view:website:pdsl_invoice.report_invoice_document
 msgid "Payment Term:"
-msgstr "Conditions de règlement:"
+msgstr "Conditions de règlement : "
 
 #. module: pdsl_invoice
 #: view:website:pdsl_invoice.report_invoice_document
@@ -92,7 +97,7 @@ msgstr "Quantité"
 #. module: pdsl_invoice
 #: view:website:pdsl_invoice.report_invoice_document
 msgid "Reference:"
-msgstr "Référence:"
+msgstr "Référence : "
 
 #. module: pdsl_invoice
 #: view:website:pdsl_invoice.report_invoice_document
@@ -102,7 +107,7 @@ msgstr "Avoir"
 #. module: pdsl_invoice
 #: view:website:pdsl_invoice.report_invoice_document
 msgid "Source:"
-msgstr "Source :"
+msgstr "Source : "
 
 #. module: pdsl_invoice
 #: view:website:pdsl_invoice.report_invoice_document
@@ -117,7 +122,7 @@ msgstr "Avoir fournisseur"
 #. module: pdsl_invoice
 #: view:website:pdsl_invoice.report_invoice_document
 msgid "TIN:"
-msgstr "Numéro TVA :"
+msgstr "Numéro TVA : "
 
 #. module: pdsl_invoice
 #: view:website:pdsl_invoice.report_invoice_document
