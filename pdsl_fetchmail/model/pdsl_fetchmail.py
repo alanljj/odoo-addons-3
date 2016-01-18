@@ -194,10 +194,17 @@ class crm_lead(models.Model):
                     defaults[key] = value
         
         # Try to assign a default sales team.
+        section_id = False
         try:
-            defaults['section_id'] = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'crm', "section_sales_department")[1]
+            section_id = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'crm', "section_sales_department")[1]
         except:
             pass
+        if not section_id:
+            section_id = self.pool.get('crm.case.section').search(cr,uid, [], limit=1, context=context)[0]
+        defaults['section_id'] = section_id
+        
+        # Keep reference to the original message (for confirmation).
+        defaults['description'] = body
         
         # Create the issue
         defaults.update(custom_values)
