@@ -19,65 +19,32 @@
             <field name="object_id" search="[('model','=','crm.lead')]" model="ir.model"/>
         </record>
 
-		<!-- Workflow -->
-		<record id="pdsl_lead_workflow" model="workflow">
-			<field name="name">pdsl.crm.lead.workflow</field>
-			<field name="osv">crm.lead</field>
-			<field name="on_create">True</field>
-		</record>
 
-		<!-- Workflow Activities -->
-		<record id="pdsl_lead_new" model="workflow.activity">
-			<field name="wkf_id" ref="pdsl_lead_workflow" />
-			<field name="flow_start">True</field>
-			<field name="name">new lead</field>
-			<field name="kind">function</field>
-			<field name="action">pdsl_new()</field>
-		</record>
-		<record id="pdsl_support_send_confirm" model="workflow.activity">
-			<field name="wkf_id" ref="pdsl_lead_workflow" />
-			<field name="name">send support confirm</field>
-			<field name="kind">function</field>
-			<field name="action">pdsl_send_confirm()</field>
-		</record>
-		<record id="pdsl_subscription_send_confirm" model="workflow.activity">
-			<field name="wkf_id" ref="pdsl_lead_workflow" />
-			<field name="name">send subscription confirm</field>
-			<field name="kind">function</field>
-			<field name="action">pdsl_send_confirm(subscription=True)</field>
-		</record>
-		<record id="pdsl_lead_stop" model="workflow.activity">
-			<field name="wkf_id" ref="pdsl_lead_workflow" />
-			<field name="flow_stop">True</field>
-			<field name="name">stop lead</field>
-			<field name="kind">function</field>
-			<field name="action">pdsl_stop()</field>
-		</record>
+        <!-- Send confirmation mail when creating new Subscription Lead. -->
+        <record id="filter_subscription_lead" model="ir.filters">
+            <field name="name">Subscription Leads</field>
+            <field name="model_id">crm.lead</field>
+            <field name="domain">[('email_from','!=','')]</field>
+            <field name="user_id" eval="False"/>
+        </record>
+        <record id="action_send_subscription_confirm" model="ir.actions.server">
+            <field name="name">Send subscription confirmation mail.</field>
+            <field name="model_id" ref="crm.model_crm_lead"/>
+            <field name="condition">True</field>
+            <field name="type">ir.actions.server</field>
+            <field name="state">email</field>
+            <field name="template_id" ref="pdsl_fetchmail_subscription_confirm_email_template"/>
+        </record>
+        <record id="rule_send_subscription_confirm" model="base.action.rule">
+            <field name="name">Send confirm mail subscription for Lead received.</field>
+            <field name="model_id" ref="crm.model_crm_lead"/>
+            <field name="sequence">2</field>
+            <field name="kind">on_create</field>
+            <field name="filter_id" ref="filter_subscription_lead"/>
+            <field name="act_user_id" ref="base.user_root"/>
+            <field name="server_action_ids" eval="[(6,0,[ref('action_send_support_confirm')])]"/>
+        </record>
 
-		<!-- Workflow Transitions -->
-		<record id="trans_new_to_send_confirm" model="workflow.transition">
-			<field name="act_from" ref="pdsl_lead_new" />
-			<field name="act_to" ref="pdsl_support_send_confirm" />
-			<field name="condition">message_ids and pdsl_is_support()</field>
-		</record>
-		<record id="trans_new_to_subscription" model="workflow.transition">
-			<field name="act_from" ref="pdsl_lead_new" />
-			<field name="act_to" ref="pdsl_subscription_send_confirm" />
-			<field name="condition">message_ids and pdsl_is_subscribe()</field>
-		</record>
-		<record id="trans_new_to_open" model="workflow.transition">
-			<field name="act_from" ref="pdsl_lead_new" />
-			<field name="act_to" ref="pdsl_lead_stop" />
-			<field name="condition">message_ids and not pdsl_is_subscribe() and not pdsl_is_support()</field>
-		</record>
-		<record id="trans_confirm_to_create_partner" model="workflow.transition">
-			<field name="act_from" ref="pdsl_subscription_send_confirm" />
-			<field name="act_to" ref="pdsl_lead_stop" />
-		</record>
-		<record id="trans_confirm_to_open" model="workflow.transition">
-			<field name="act_from" ref="pdsl_support_send_confirm" />
-			<field name="act_to" ref="pdsl_lead_stop" />
-		</record>
 
 	</data>
 </openerp>

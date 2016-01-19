@@ -14,9 +14,9 @@ try:
 except ImportError:
     import json  # noqa
 
-from openerp import tools
-from openerp import models
-from openerp.tools.translate import _
+from openerp import tools  # @UnresolvedImport
+from openerp import models  # @UnresolvedImport
+from openerp.tools.translate import _  # @UnresolvedImport
 
 _logger = logging.getLogger(__name__)
 
@@ -159,6 +159,8 @@ class crm_lead(models.Model):
                 defaults['categ_ids'] = [(6, 0, [tag_id,])] 
             
         def set_from(val):
+            # Remove any extra space. e.g.: foo@bar.com [3]
+            val = re.search('[^ ]*', val).group(0)
             defaults['email_from'] = val
             # Replace original from value.
             partner_obj = self.pool.get('res.partner')
@@ -262,76 +264,87 @@ class crm_lead(models.Model):
         return super(crm_lead, self).message_update(cr, uid, ids, msg, update_vals=update_vals, context=context)
         
         
+class project_issue(models.Model):
+    _name = 'project.issue'
+    _inherit = 'project.issue'
+
     # ----------------------------------------
-    # Workflow
+    # Mail Gateway
     # ----------------------------------------
-        
-    def pdsl_new(self, cr, uid, ids, context=None):
-        _logger.debug('workflow starting!')
-        
-    def pdsl_stop(self, cr, uid, ids, context=None):
-        _logger.debug('workflow stop!')
-        
-    def pdsl_is_category(self, cr, uid, ids, context=None, category=None):
-        """
-        Check if the given issue is tag with given category.
-        """  
-        # Compare the result with the issue tags.
-        issue = self.pool.get('crm.lead').browse(cr, uid, ids[0], context=context)
-        if not issue or not issue.categ_ids:
+    
+    def _pdsl_find_categ(self, cr, uid, action, context=None):
+        """Search categories related to the mail."""
+        tags_pool = self.pool.get('project.category')
+        tag_ids = tags_pool.search(cr, uid, [('name', 'ilike', action)], limit=1, context=context)
+        if not tag_ids or not tag_ids[0]:
             return False
-
-        for tag in issue.categ_ids:
-            if tag.name.lower() == category.lower():
-                return True
-
-        return False
+        _logger.debug("action [%s] found as category [] categories [%s]", action, tag_ids[0])
+        return tag_ids[0]
     
-    def pdsl_is_subscribe(self, cr, uid, ids, context=None):
-        """
-        Check if the issue is a subscription request.
-        Return true if subscription request.
-        """
-        return self.pdsl_is_category(cr, uid, ids, context=context, category='subscribe')
-
-    def pdsl_is_confirmed(self, cr, uid, ids, context=None):
-        """
-        Check if the issue is a subscription request.
-        Return true if subscription request.
-        """
-        return self.pdsl_is_category(cr, uid, ids, context=context, category='confirm')
+    def _pdsl_find_lang(self, cr, uid, lang, context=None):
+        """Search the language code in all available language."""
+        pool_lang = self.pool.get('res.lang')
+        lang_ids = pool_lang.search(cr, uid, [('code', 'ilike', lang)], limit=1, context=context)
+        if not lang_ids or not lang_ids[0]:
+            return False
+        lang_obj = pool_lang.browse(cr, uid, lang_ids[0], context=context)
+        _logger.debug('language [%s] found as [%s]', lang, lang_obj.code)
+        return lang_obj.code
     
-    def pdsl_is_support(self, cr, uid, ids, context=None):
+    def message_new(self, cr, uid, msg, custom_values=None, context=None):
         """
-        Check if the issue is a subscription request.
-        Return true if subscription request.
+        Override this mail.thread method in order to fill more data in Leads.
         """
-        return self.pdsl_is_category(cr, uid, ids, context=context, category='support')
-    
-    
-    def pdsl_send_confirm(self, cr, uid, ids, context=None, subscription=False):
-        """
-        Called by workflow to send confirmation message. Send an appropriate
-        confirmation message.
-        """
-        
-        # Try to determine the best language to be used.
+        defaults = {}
+        if custom_values is None:
+            custom_values = {}
         if context is None:
             context = {}
-        # context['lang'] = self._pdsl_get_context_lang(cr, uid, ids[0], context)
         
-        # Check if the current issue is a "subscription request".
-        # If so, send a confirmation to verify his EMAIL.
-        if subscription:
-            template_id = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'pdsl_fetchmail', 'pdsl_fetchmail_subscription_confirm_email_template')[1]
-        else:
-            template_id = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'pdsl_fetchmail', 'pdsl_fetchmail_support_confirm_email_template')[1]
+        def set_lang_context(val):
+            lang_code = self._pdsl_find_lang(cr, uid, lang=val, context=context)
+            if lang_code:
+                context['lang'] = lang_code
         
-        # Send the mail
-        _logger.info("sending confirmation mail")
-        values = self.pool.get('email.template').generate_email(cr, uid, template_id, ids[0], context=context)
-        self.pool.get('email.template').send_mail(cr, uid, template_id, ids[0], force_send=True, context=context)
-
-        # Add a log to the issue about confirmation being sent.
-        super(crm_lead, self).message_post(
-            cr, uid, ids[0], subject=values['subject'], body=values['body'], type='email', context=context)
+        def set_categ(val):
+            tag_id = self._pdsl_find_categ(cr, uid, action=val, context=context)
+            if tag_id:
+                defaults['categ_ids'] = [(6, 0, [tag_id,])] 
+            
+        def set_from(val):
+            # Remove any extra space. e.g.: foo@bar.com [3]
+            val = re.search('[^ ]*', val).group(0)
+            defaults['email_from'] = val
+            # Replace original from value.
+            partner_obj = self.pool.get('res.partner')
+            author_ids = partner_obj.search(cr, uid, [('email', 'ilike', val)], limit=1, context=context)
+            if author_ids:
+                msg['author_id'] = author_ids[0]
+        
+        # Read data contains in email. If no special data, just create a plain Leads
+        # using default implementation.
+        body = tools.html2plaintext(msg.get('body')) if msg.get('body') else ''
+        maps = {
+            'name': 'contact_name',
+            'email': set_from,
+            'lang': set_lang_context,
+            'action': set_categ,
+        }
+        for line in body.split('\n'):
+            line = line.strip()
+            m = pdsl_command_re.match(line)
+            if m and maps.get(m.group(1).lower()):
+                key = maps.get(m.group(1).lower())
+                value = m.group(2)
+                if hasattr(key, '__call__'):
+                    key(value)
+                else:
+                    defaults[key] = value
+        
+        # Keep reference to the original message (for confirmation).
+        defaults['description'] = body
+        
+        # Create the issue
+        defaults.update(custom_values)
+        return super(project_issue, self).message_new(
+            cr, uid, msg, custom_values=defaults, context=context)
