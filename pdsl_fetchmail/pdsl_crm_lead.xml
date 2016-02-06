@@ -1,5 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
+    <data noupdate="1">
+
+        <record id="pdsl_fetchmail_subscription_confirm_email_template" model="email.template">
+            <field name="name">Confirm subscription</field>
+            <field name="email_from"><![CDATA[${object.company_id.name} <${object.company_id.email|safe}>]]></field>
+            <field name="subject">Welcome to Minarca! Please Confirm Your Email</field>
+            <field name="email_to">${object.email_from|safe}</field>
+            <field name="lang">${ctx.get('lang') or object.partner_id.lang}</field>
+            <field name="model_id" search="[('model','=','crm.lead')]" model="ir.model"/>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html"><![CDATA[
+<p>Welcome to Minarca!<p>
+
+<p>Thanks for signing up for Minarca! To used our backup service, please verify your email address by clicking the link below.</p>
+
+<p><a href="http://www.patrikdufresne.com/cgi-bin/support.cgi?action=confirm&redirect=/fr/minarca/subscribe-email-confirm/&messageid=${object.message_ids[0].message_id}">CONFIRM EMAIL</a></p>
+
+<p>Note that this link will expire in 24 hours if it's not activated.</p>
+
+<p>Request ID: ${object.id}</p>
+
+<p>Thank you,<br>
+Patrik Dufresne Service Logiciel inc.</p>
+
+<p>--</p>
+<p>Original message received:</p>
+
+<pre>
+${object.description or ''}
+</pre>]]></field>
+        </record>
+        
+    </data>
 	<data>
 
 		<!-- crm categories -->
@@ -18,11 +51,15 @@
             <field name="section_id" ref="sales_team.section_sales_department"/>
             <field name="object_id" search="[('model','=','crm.lead')]" model="ir.model"/>
         </record>
-
+        <record model="crm.case.categ" id="categ_minarca">
+            <field name="name">minarca</field>
+            <field name="section_id" ref="sales_team.section_sales_department"/>
+            <field name="object_id" search="[('model','=','crm.lead')]" model="ir.model"/>
+        </record>
 
         <!-- Send confirmation mail when creating new Subscription Lead. -->
         <record id="filter_subscription_lead" model="ir.filters">
-            <field name="name">Subscription Leads</field>
+            <field name="name">Minarca subscription Leads received by mail.</field>
             <field name="model_id">crm.lead</field>
             <field name="domain">[('email_from','!=','')]</field>
             <field name="user_id" eval="False"/>
@@ -42,7 +79,7 @@
             <field name="kind">on_create</field>
             <field name="filter_id" ref="filter_subscription_lead"/>
             <field name="act_user_id" ref="base.user_root"/>
-            <field name="server_action_ids" eval="[(6,0,[ref('action_send_support_confirm')])]"/>
+            <field name="server_action_ids" eval="[(6,0,[ref('action_send_subscription_confirm')])]"/>
         </record>
 
 
