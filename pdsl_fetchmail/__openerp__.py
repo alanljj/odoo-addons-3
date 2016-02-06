@@ -37,12 +37,10 @@ Known issues: not safe for use within a multicompany database.
         'crm',
         'account',
         'project_issue',
-        'crm_helpdesk',
         ],
     "data": [
         'pdsl_crm_lead.xml',
         'pdsl_project_issue.xml',
-        'pdsl_crm_helpdesk.xml',
         ],
     'installable': True,
     'active': False
