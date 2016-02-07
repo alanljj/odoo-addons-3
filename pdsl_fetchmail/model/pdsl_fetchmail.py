@@ -11,6 +11,7 @@ import time
 
 from openerp import models  # @UnresolvedImport
 from openerp import tools  # @UnresolvedImport
+from openerp import api  # @UnresolvedImport
 from openerp.addons.mail.mail_thread import mail_thread  # @UnresolvedImport
 
 try:
@@ -84,6 +85,7 @@ def _parse_body(body):
 message_parse_orig = mail_thread.message_parse
 message_post_orig = mail_thread.message_post
 
+@api.cr_uid_ids_context
 def message_parse(self, cr, uid, message, save_original=False, context=None):
     """
     Override to extract data from body and replace header value.
@@ -131,6 +133,7 @@ def message_parse(self, cr, uid, message, save_original=False, context=None):
     msg.update(extra_values)
     return msg
 
+@api.cr_uid_ids_context
 def message_post(self, cr, uid, thread_id, context, **message_dict):
     """
     Override to remove invalid fields added by message_parse().

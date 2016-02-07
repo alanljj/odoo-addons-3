@@ -30,7 +30,7 @@ Known issues: not safe for use within a multicompany database.
 * A second Sales Team should match the incoming mail address. Project -> Projects -> Create. Set Email Alias
 * Outgoing mail interval should be changed: Settings -> Technical -> Scheduler -> Scheduled Actions -> Email Queue Manager
 * Verify your catch all alias: Settings -> Technical -> Parameters -> System Parameters. Make sure you have "mail.catchall.domain" and "mail.catchall.alias" 
-
+* Configure server with `max_cron_threads=1` to avoid SQL lock.
 """,
     "depends": [
         'fetchmail',
