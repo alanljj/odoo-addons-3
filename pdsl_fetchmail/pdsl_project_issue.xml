@@ -35,7 +35,6 @@ ${object.description or ''}
         <!-- project categories -->
         <record model="project.category" id="project_categ_support">
             <field name="name">Support</field>
-            <field name="object_id" search="[('model','=','crm.lead')]" model="ir.model"/>
         </record>
 
         <!-- Send confirmation mail when creating new issue. -->
