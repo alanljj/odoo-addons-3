@@ -222,9 +222,13 @@ class crm_lead(models.Model):
                 defaults['state_id'] = state_id
         
         def set_categ(val):
-            tag_id = self._pdsl_find_categ(cr, uid, action=val, context=context)
-            if tag_id:
-                defaults['categ_ids'] = [(6, 0, [tag_id, ])] 
+            new_tag_id = self._pdsl_find_categ(cr, uid, action=val, context=context)
+            if new_tag_id:
+                # Get existing tags
+                tags_ids = defaults.get('categ_ids', [(6, 0, [])])[0][2]
+                # Append ours.
+                tags_ids.append(new_tag_id)
+                defaults['categ_ids'] = [(6, 0, tags_ids)]
             
         # Read data contains in email. If no special data, just create a plain Leads
         # using default implementation.
@@ -238,6 +242,7 @@ class crm_lead(models.Model):
             'country': set_country,
             'zip': 'zip',
             'action': set_categ,
+            'product': lambda val: map(set_categ, val.split(' ')),
         }
         for key in maps:
             if key in msg:
