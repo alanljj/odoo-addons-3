@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data noupdate="1">
+    
+        <record id="new_password_email_template" model="email.template">
+            <field name="name">New membership password</field>
+            <field name="email_from"><![CDATA[${object.company_id.name} <${object.company_id.email|safe}>]]></field>
+            <field name="subject">New membership password</field>
+            <field name="partner_to">${object.id}</field>
+            <field name="lang">${ctx.get('lang') or object.lang}</field>
+            <field name="model_id" search="[('model','=','res.partner')]" model="ir.model"/>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html"><![CDATA[
+<p>We have generate a new username and password for your recent membership subscription.
+It's recommended to change your password as soon as you received it for security reason.</p>
+<ul>
+<li>Username: ${object.ldap_membership_login}</li>
+<li>Password: ${ctx.get('password','')}</li>
+</ul>
+<p>Thank you,<br>
+Patrik Dufresne Service Logiciel inc.</p>]]></field>
+        </record>
+    
+    </data>
+    <data>
+        
+        <!-- PARTNER VIEW -->
+        <record model="ir.ui.view" id="view_partner_form_ldap_membership">
+            <field name="name">res.partner.form.ldap.membership</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="membership.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='free_member']" position="before">
+                    <field name="ldap_membership_login"/>
+                </xpath>
+            </field>
+        </record>
+        
+        
+        <!-- PRODUCT VIEW -->
+        <record model="ir.ui.view" id="membership_products_form_ldap">
+            <field name="name">LDAP Membership Products</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="membership.membership_products_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='active']" position="after">
+                    <field name="ldap_membership_group"/>
+                </xpath>
+            </field>
+        </record>
+        
+        <record model="ir.ui.view" id="product_template_form_view_ldap_membership">
+            <field name="name">LDAP Membership Products</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="membership.product_template_form_view" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='membership_date_to']" position="before">
+                    <field name="ldap_membership_group"/>
+                </xpath>
+            </field>
+        </record>
+        
+        <!-- Update Ldap Membership Action -->
+        <record id="action_update_ldap_membership" model="ir.actions.server">
+            <field name="name">Update LDAP membership</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="condition">True</field>
+            <field name="type">ir.actions.server</field>
+            <field name="state">code</field>
+            <field name="code">obj.pdsl_update_ldap_membership()</field>
+        </record>
+        
+        <menuitem id='menu_update_ldap_membership' name='Update LDAP membership' sequence="100" parent="base.menu_base_config"
+            action="action_update_ldap_membership"/>
+            
+        <!-- Reset LDAP password Action -->
+        <record id="action_reset_ldap_password" model="ir.actions.server">
+            <field name="name">Reset LDAP password</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="condition">True</field>
+            <field name="type">ir.actions.server</field>
+            <field name="state">code</field>
+            <field name="code">obj.pdsl_reset_password()</field>
+        </record>
+        
+        <menuitem id='menu_reset_ldap_password' name='Reset LDAP password' sequence="100" parent="base.menu_base_config"
+            action="action_reset_ldap_password"/>
+
+    </data>
+</openerp>
