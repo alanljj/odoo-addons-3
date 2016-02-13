@@ -224,10 +224,10 @@ class ResPartner(models.Model):
         def _new_username():
             """Generate a unused ldap username."""
             candidates = []
-            if self.email and len(self.email) > 8:
-                candidates.append(_norm_username(self.email.partition('@')[0]))
             if self.name:
                 candidates.append(_norm_username(self.name))
+            if self.email and len(self.email.partition('@')[0]) > 8:
+                candidates.append(_norm_username(self.email.partition('@')[0]))
             # Check if one is available.
             for c in candidates:
                 search_filter = ldap.filter.filter_format(conf['ldap_filter'], (c.encode('utf-8'),))
