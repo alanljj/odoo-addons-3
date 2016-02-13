@@ -14,12 +14,13 @@ import ldap
 import logging
 import os
 import re
+import string
 import time
 
 from openerp import api, models, _
+from openerp.exceptions import Warning
 from openerp.osv import fields
 from openerp.osv import osv
-from openerp.exceptions import Warning
 
 
 _logger = logging.getLogger(__name__)
@@ -211,7 +212,7 @@ class ResPartner(models.Model):
                 l = conf = None
                 _logger.warn('connection to LDAP server failed', exc_info=1)
         if not l:
-            raise ValueError('LDAP execution failed')
+            raise Warning('Fail to establish connection to LDAP server!')
 
         def _norm_username(username):
             """Remove or replace invalid char from username."""
@@ -294,7 +295,7 @@ class ResPartner(models.Model):
                 for line in self.member_lines
                 if line.state in ACTIVE_STATES
                 if line.membership_id.ldap_membership_group]
-            groups = [item.strip(' ') for sublist in groups for item in sublist]
+            groups = set(item.strip(' ') for sublist in groups for item in sublist)
             groups_b = [g.encode('utf-8') for g in groups]
 
             # Build up expected user (should be bytes)
@@ -385,13 +386,16 @@ class ResPartner(models.Model):
                 base=conf['ldap_base'],
                 scope=ldap.SCOPE_SUBTREE,
                 filterstr='(&(objectClass=posixAccount)(uidNumber=*))',
-                attrsonly=['uidNumber'])
+                attrlist=['uidNumber'])
             if len(r) > 0:
                 return max(int(u[1]['uidNumber'][0]) for u in r) + 1        
             raise ValueError("fail to find new uidNumber")
         
         def _new_password():
             """Generate a new password."""
+            table = string.ascii_letters + string.digits
+            ''.join([table[ord(c) % len(table)] for c in os.urandom(12)])
+            
             return base64.b64encode(os.urandom(8))[:-1].replace('==+/\\', '')
         
         def _ssha(password):
