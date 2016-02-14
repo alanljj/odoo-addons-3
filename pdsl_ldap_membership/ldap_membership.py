@@ -257,7 +257,9 @@ class ResPartner(models.Model):
         Update or create the user in LDAP.
         """
         # Check if update is required.
-        active = any(line.state in ACTIVE_STATES for line in self.member_lines)
+        active = any(line.state in ACTIVE_STATES
+                     for line in self.member_lines
+                     if line.membership_id.ldap_membership_group)
         if not active and not self.ldap_membership_login:
             # Update not required.
             return
