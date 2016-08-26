@@ -31,10 +31,27 @@
     attachment="(object.state in ('open','paid')) and ('INV'+(object.number or '').replace('/','')+'.pdf')"
     />
 
-<!-- Define the paperformat of the repport. -->
+<!-- Define the paper format of the report. -->
 <record id="account.account_invoices" model="ir.actions.report.xml">
     <field name="paperformat_id" ref="pdsl_invoice.paperformat_invoice"/>
 </record>
+
+
+<!-- Replace existing quote report by ours. -->
+<report
+    id="sale.report_sale_order"
+    model="sale.order"
+    string="Quotation / Order"
+    report_type="qweb-pdf"
+    file="pdsl_invoice.report_saleorder" 
+    name="pdsl_invoice.report_saleorder"
+    />
+    
+<!-- Define the paper format of the report. -->
+<record id="sale.report_sale_order" model="ir.actions.report.xml">
+    <field name="paperformat_id" ref="pdsl_invoice.paperformat_invoice"/>
+</record>
+
 
 </data>
 </openerp>

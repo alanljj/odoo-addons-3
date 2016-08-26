@@ -148,3 +148,99 @@ msgstr "Total HT"
 #: view:website:pdsl_invoice.report_invoice_document
 msgid "Unit Price"
 msgstr "Prix unitaire"
+
+#. module: pdsl_invoice
+#: view:website:pdsl_invoice.report_saleorder_document
+msgid "Date Ordered:"
+msgstr "Date de commande :"
+
+#. module: pdsl_invoice
+#: field:sale.order.line,name:0 view:website:sale.report_saleorder_document
+msgid "Description"
+msgstr "Description"
+
+#. module: pdsl_invoice
+#: view:website:pdsl_invoice.report_saleorder_document
+msgid "Disc.(%)"
+msgstr "Rem.(%)"
+
+#. module: pdsl_invoice
+#: view:website:pdsl_invoice.report_saleorder_document
+msgid "Invoice address:"
+msgstr "Adresse de facturation :"
+
+#. module: pdsl_invoice
+#: view:website:pdsl_invoice.report_saleorder_document
+msgid "Invoice and shipping address:"
+msgstr "Adresse de facturation et livraison"
+
+#. module: pdsl_invoice
+#: view:website:pdsl_invoice.report_saleorder_document
+msgid "Order N°"
+msgstr "N° de commande"
+
+#. module: pdsl_invoice
+#: view:website:pdsl_invoice.report_saleorder_document
+msgid "Payment Term:"
+msgstr "Conditions de règlement :"
+
+#. module: pdsl_invoice
+#: view:website:pdsl_invoice.report_saleorder_document
+msgid "Price"
+msgstr "Prix"
+
+#. module: pdsl_invoice
+#: view:website:pdsl_invoice.report_saleorder_document
+msgid "Quantity"
+msgstr "Quantité"
+
+#. module: pdsl_invoice
+#: view:website:pdsl_invoice.report_saleorder_document
+msgid "Quotation Date:"
+msgstr "Date du devis:"
+
+#. module: pdsl_invoice
+#: view:website:pdsl_invoice.report_saleorder_document
+msgid "Quotation N°"
+msgstr "Devis N°"
+
+#. module: pdsl_invoice
+#: view:website:pdsl_invoice.report_saleorder_document
+msgid "Salesperson:"
+msgstr "Vendeur:"
+
+#. module: pdsl_invoice
+#: view:website:pdsl_invoice.report_saleorder_document
+msgid "Shipping address:"
+msgstr "Adresse de livraison :"
+
+#. module: pdsl_invoice
+#: view:website:pdsl_invoice.report_saleorder_document
+msgid "Taxes"
+msgstr "Taxes"
+
+#. module: pdsl_invoice
+#: view:website:pdsl_invoice.report_saleorder_document
+msgid "Total"
+msgstr "Total"
+
+#. module: pdsl_invoice
+#: view:website:pdsl_invoice.report_saleorder_document
+msgid "Total Without Taxes"
+msgstr "Total HT"
+
+#. module: pdsl_invoice
+#: view:website:pdsl_invoice.report_saleorder_document
+msgid "Unit Price"
+msgstr "Prix unitaire"
+
+#. module: pdsl_invoice
+#: view:website:pdsl_invoice.report_saleorder_document
+msgid "VAT:"
+msgstr "TVA :"
+
+#. module: pdsl_invoice
+#: view:website:pdsl_invoice.report_saleorder_document
+msgid "Your Reference:"
+msgstr "Votre Référence:"
+

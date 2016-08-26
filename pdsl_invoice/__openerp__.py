@@ -23,6 +23,7 @@ This module is compatible with OpenERP 8.0.
     "data": [
         'pdsl_invoice_data.xml',
         'views/report_invoice.xml',
+        'views/report_saleorder.xml',
         ],
     'installable': True,
     'active': False
