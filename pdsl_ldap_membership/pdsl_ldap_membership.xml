@@ -70,9 +70,16 @@ Patrik Dufresne Service Logiciel inc.</p>]]></field>
             <field name="code">obj.pdsl_update_ldap_membership()</field>
         </record>
         
-        <menuitem id='menu_update_ldap_membership' name='Update LDAP membership' sequence="100" parent="base.menu_base_config"
-            action="action_update_ldap_membership"/>
-            
+        <!--  Show Server action in "More" menu. -->
+        <record model="ir.values" id="action_update_ldap_membership_values">
+            <field name="model_id" ref="base.model_res_partner" />
+            <field name="name">Update LDAP membership</field>
+            <field name="key">action</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.server,' + str(ref('action_update_ldap_membership'))" />
+            <field name="model">res.partner</field>
+        </record>
+        
         <!-- Reset LDAP password Action -->
         <record id="action_reset_ldap_password" model="ir.actions.server">
             <field name="name">Reset LDAP password</field>
@@ -83,8 +90,15 @@ Patrik Dufresne Service Logiciel inc.</p>]]></field>
             <field name="code">obj.pdsl_reset_password()</field>
         </record>
         
-        <menuitem id='menu_reset_ldap_password' name='Reset LDAP password' sequence="100" parent="base.menu_base_config"
-            action="action_reset_ldap_password"/>
-
+        <!--  Show Server action in "More" menu. -->
+        <record model="ir.values" id="action_reset_ldap_password_values">
+            <field name="model_id" ref="base.model_res_partner" />
+            <field name="name">Reset LDAP password</field>
+            <field name="key">action</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.server,' + str(ref('action_reset_ldap_password'))" />
+            <field name="model">res.partner</field>
+        </record>
+        
     </data>
 </openerp>
