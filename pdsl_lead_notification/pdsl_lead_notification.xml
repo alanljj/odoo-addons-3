@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+		<!-- demo automated actions add message on new lead after 5 days -->
+		<record id="pdsl_filter_active_lead" model="ir.filters">
+			<field name="name">Active Leads</field>
+			<field name="model_id">crm.lead</field>
+			<field name="domain">[('stage_id.sequence', '>', 1)]</field>
+			<field name="user_id" eval="False" />
+		</record>
+        <record id="pdsl_email_template_opportunity_reminder_mail"
+            model="email.template">
+            <field name="name">Reminder to User Template</field>
+            <field name="model_id" ref="crm.model_crm_lead" />
+            <field name="auto_delete" eval="True" />
+            <field name="email_from"><![CDATA[${object.company_id.name} <${object.company_id.email|safe}>]]></field>
+            <field name="email_to">${(object.user_id != False and
+                object.user_id.email)|safe}</field>
+            <field name="subject">Reminder on Lead: ${object.name} for ${object.partner_id != False and object.partner_id.name or
+                object.contact_name}</field>
+            <field name="body_html"><![CDATA[<p>This opportunity required your attention. Here are some details:</p>
+<h1>${object.name} for ${object.partner_id != False and object.partner_id.name or object.contact_name}</h1>
+<ul>
+<li>Next Action: ${object.date_action or ""} - ${object.title_action or ""}</li>
+<li>Phone: ${object.partner_id != False and object.partner_id.phone or object.phone or ""}</li>
+<li>Email: ${object.partner_id != False and object.partner_id.email or object.email_from or ""}</li>
+</ul><br/>${object.description or ""}]]></field>
+        </record>
+		<record id="pdsl_action_email_reminder_lead" model="ir.actions.server">
+			<field name="name">Reminder to User</field>
+			<field name="model_id" ref="crm.model_crm_lead" />
+			<field name="condition">True</field>
+			<field name="type">ir.actions.server</field>
+			<field name="state">email</field>
+			<field name="template_id" ref="pdsl_email_template_opportunity_reminder_mail" />
+		</record>
+		<record id="pdsl_rule_set_reminder_lead2" model="base.action.rule">
+			<field name="name">Set Auto Reminder on leads requiring actions.
+			</field>
+			<field name="model_id" ref="crm.model_crm_lead" />
+			<field name="sequence">1</field>
+			<field name="kind">on_time</field>
+			<field name="filter_id" ref="pdsl_filter_active_lead" />
+			<field name="trg_date_id" ref="crm.field_crm_lead_date_action" />
+			<field name="trg_date_range">-1</field>
+			<field name="trg_date_range_type">day</field>
+			<field name="server_action_ids" eval="[(6,0,[ref('pdsl_action_email_reminder_lead')])]" />
+		</record>
+
+	</data>
+</openerp>

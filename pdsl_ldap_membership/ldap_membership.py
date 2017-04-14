@@ -284,13 +284,13 @@ class ResPartner(models.Model):
 
         try:
             # Determine expiration date
-            expire_date = int(time.time())
+            expire_date = time.time()
             # TODO Pick the date only if PAID. Otherwise, pick Date_From + 60 jours.
             end_dates = [time.mktime(time.strptime(line.date_to, '%Y-%m-%d'))
                          for line in self.member_lines
                          if line.state in ACTIVE_STATES]
             if end_dates:
-                expire_date = int(max(end_dates))
+                expire_date = max(end_dates)
 
             # Build list of description. One line per membership.
             groups = [line.membership_id.ldap_membership_group.split(',')
@@ -303,7 +303,7 @@ class ResPartner(models.Model):
             # Build up expected user (should be bytes)
             ldap_membership_login_b = self.ldap_membership_login.encode('utf-8')
             attrs = {
-                'shadowExpire': str(expire_date / 86400),  # / 24 / 60 / 60
+                'shadowExpire': str(expire_date // 86400),  # / 24 / 60 / 60
                 'description': groups_b,
             }
             
