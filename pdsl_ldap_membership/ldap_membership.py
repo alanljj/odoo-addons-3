@@ -18,7 +18,7 @@ import string
 import time
 
 from openerp import api, models, _
-from openerp.exceptions import Warning
+from openerp.exceptions import Warning, ValidationError
 from openerp.osv import fields
 from openerp.osv import osv
 
@@ -109,7 +109,7 @@ class ProductTemplate(osv.osv):
         if not self.ldap_membership_group:
             return
 
-        _logger.info('updating LDAP product')
+        _logger.info('updating LDAP product [%s]' % self.ldap_membership_group)
         
         # Connect to LDAP server
         ldap_obj = self.env['res.company.ldap']
@@ -197,6 +197,29 @@ class ResPartner(models.Model):
     }
 
     @api.multi
+    def _connect(self):
+        """
+        Try to connect to LDAP server and return the LDAP connection.
+        """
+        # Get LDAP information.
+        l = conf = None
+        ldap_obj = self.env['res.company.ldap']
+        if not ldap_obj.get_ldap_dicts():
+            _logger.warn('skip LDAP membership update - LDAP server not configured')
+            return
+        
+        # Connect to LDAP server
+        for conf in ldap_obj.get_ldap_dicts():
+            try:
+                l = ldap_obj.connect(conf)
+                l.simple_bind_s(conf['ldap_binddn'], conf['ldap_password'].encode('utf-8'))
+            except:
+                _logger.warn('connection to LDAP server failed', exc_info=1)
+        if not l:
+            raise Warning(_('Failed to update LDAP membership.\nFail to connect to LDAP server. Check logs for more details.'))
+        return l, conf
+
+    @api.multi
     def _pdsl_set_ldap_user(self):
         """
         Call to create a new user in LDAP. Search for a free and
@@ -268,19 +291,10 @@ class ResPartner(models.Model):
         if not self.ldap_membership_login:
             self._pdsl_set_ldap_user()
 
-        _logger.info('updating user membership')
+        _logger.info('updating user [%s] membership' % self.ldap_membership_login)
         
         # Connect to LDAP server
-        ldap_obj = self.env['res.company.ldap']
-        for conf in ldap_obj.get_ldap_dicts():
-            try:
-                l = ldap_obj.connect(conf)
-                l.simple_bind_s(conf['ldap_binddn'], conf['ldap_password'].encode('utf-8'))
-            except:
-                l = conf = None
-                _logger.warn('connection to LDAP server failed', exc_info=1)
-        if not l:
-            raise ValueError('LDAP execution failed')
+        l, ldap_conf = self._connect()
 
         try:
             # Determine expiration date
@@ -303,21 +317,21 @@ class ResPartner(models.Model):
             # Build up expected user (should be bytes)
             ldap_membership_login_b = self.ldap_membership_login.encode('utf-8')
             attrs = {
-                'shadowExpire': str(expire_date // 86400),  # / 24 / 60 / 60
+                'shadowExpire': str(int(expire_date // 86400)),  # / 24 / 60 / 60
                 'description': groups_b,
             }
             
             # Search user in LDAP.
-            search_filter = ldap.filter.filter_format(conf['ldap_filter'], (ldap_membership_login_b,))
+            search_filter = ldap.filter.filter_format(ldap_conf['ldap_filter'], (ldap_membership_login_b,))
             r = l.search_s(
-                base=conf['ldap_base'],
+                base=ldap_conf['ldap_base'],
                 scope=ldap.SCOPE_SUBTREE,
                 filterstr=search_filter,
                 attrlist=attrs.keys())
             if len(r) == 0:
                 # Raise exception user should exists.
                 # Most likely user was deleted manually in LDAP.
-                raise Warning("Ldap user %s doesn't exists!" % self.ldap_membership_login)
+                raise Warning(_("Failed to update LDAP membership.\nLDAP user %s doesn't exists!") % self.ldap_membership_login)
             
             # Update the record.
             dn = r[0][0]
@@ -325,7 +339,6 @@ class ResPartner(models.Model):
             if attrs != old:
                 ldif = modlist.modifyModlist(old, attrs)
                 l.modify_s(dn, ldif)
-            
 
             # Add user to each group
             for group_name in groups:
@@ -333,12 +346,12 @@ class ResPartner(models.Model):
                 # Search group
                 search_filter = ldap.filter.filter_format('(&(objectClass=posixGroup)(cn=%s))', (group_name_b,))
                 r = l.search_s(
-                    base=conf['ldap_base'],
+                    base=ldap_conf['ldap_base'],
                     scope=ldap.SCOPE_SUBTREE,
                     filterstr=search_filter,
                     attrlist=['memberUid'])
                 if len(r) == 0:
-                    raise Warning("Ldap group %s doesn't exists!" % group_name)
+                    raise Warning(_("Failed to update LDAP membership.\nLDAP group %s doesn't exists!") % group_name)
                 dn = r[0][0]
                 old = r[0][1]
                 if ldap_membership_login_b not in old.get('memberUid', []):
@@ -350,7 +363,8 @@ class ResPartner(models.Model):
             # TODO Remove user from other groups ?
             
             # Log this as an event.
-            self.message_post(body=_("LDAP user membership updated"))
+            self.message_post(
+                body=_("LDAP membership for user [%s] updated.<br/>Member of: %s<br/>Expired: %s") % (self.ldap_membership_login, ', '.join(groups), time.strftime("%a, %d %b %Y %H:%M:%S", time.localtime(expire_date))))
         finally:
             # Close connection
             l.unbind_s()
@@ -366,39 +380,34 @@ class ResPartner(models.Model):
         
         if not self.ldap_membership_login:
             return
+
+        # Basic verification to make sure we have the right information.
+        if not self.name:
+            raise Warning(_("Failed to update the LDAP membership.\nName field is required."))        
+        if not self.email:
+            raise Warning(_("Failed to update the LDAP membership.\nEmail field is required."))
         
-        _logger.info('updating LDAP user')
+        _logger.info('updating LDAP user %s' % self.ldap_membership_login)
         
         # Connect to LDAP server
-        ldap_obj = self.env['res.company.ldap']
-        for conf in ldap_obj.get_ldap_dicts():
-            try:
-                l = ldap_obj.connect(conf)
-                l.simple_bind_s(conf['ldap_binddn'], conf['ldap_password'].encode('utf-8'))
-            except:
-                l = conf = None
-                _logger.warn('connection to LDAP server failed', exc_info=1)
-        if not l:
-            raise ValueError('LDAP execution failed')
+        l, ldap_conf = self._connect()
 
         def _new_uid():
             """Query the ldap directory for a new uidNumber."""
             # Get list of uid. Pick Max +1
             r = l.search_s(
-                base=conf['ldap_base'],
+                base=ldap_conf['ldap_base'],
                 scope=ldap.SCOPE_SUBTREE,
                 filterstr='(&(objectClass=posixAccount)(uidNumber=*))',
                 attrlist=['uidNumber'])
             if len(r) > 0:
                 return max(int(u[1]['uidNumber'][0]) for u in r) + 1        
-            raise ValueError("fail to find new uidNumber")
+            raise Warning(_("fail to find new uidNumber"))
         
-        def _new_password():
+        def _new_password(length=8):
             """Generate a new password."""
-            table = string.ascii_letters + string.digits
-            ''.join([table[ord(c) % len(table)] for c in os.urandom(12)])
-            
-            return base64.b64encode(os.urandom(8))[:-1].replace('==+/\\', '')
+            table = string.lowercase + string.digits
+            return ''.join([table[ord(c) % len(table)] for c in os.urandom(length)])
         
         def _ssha(password):
             """Convert the password a SSHA (base64 SHA hash + salt)"""
@@ -412,17 +421,18 @@ class ResPartner(models.Model):
             # Build up expected user (should be bytes)
             ldap_membership_login_b = self.ldap_membership_login.encode('utf-8')
             name_b = self.name.encode('utf-8')
+            email_b = self.email.encode('utf-8')
             attrs = {
                 'cn': name_b,  # Common-name
                 'givenName': name_b.partition(' ')[0],  # Firstname
-                'sn': name_b.partition(' ')[2],  # Lastname
-                'mail': self.email.encode('utf-8'),
+                'sn': name_b.partition(' ')[2] or name_b.partition(' ')[0],  # Lastname (required)
+                'mail': email_b,
             }
             
             # Search user in LDAP.
-            search_filter = ldap.filter.filter_format(conf['ldap_filter'], (ldap_membership_login_b,))
+            search_filter = ldap.filter.filter_format(ldap_conf['ldap_filter'], (ldap_membership_login_b,))
             r = l.search_s(
-                base=conf['ldap_base'],
+                base=ldap_conf['ldap_base'],
                 scope=ldap.SCOPE_SUBTREE,
                 filterstr=search_filter,
                 attrlist=attrs.keys())
@@ -439,7 +449,7 @@ class ResPartner(models.Model):
                 attrs['userPassword'] = _ssha(password)
                 
                 # User doesn't exists. Add it
-                dn = 'uid=%s,%s,%s' % (attrs['uid'], 'ou=People', conf['ldap_base'])
+                dn = 'uid=%s,%s,%s' % (attrs['uid'], 'ou=People', ldap_conf['ldap_base'])
                 ldif = modlist.addModlist(attrs)
                 l.add_s(dn, ldif)
                 
@@ -449,6 +459,10 @@ class ResPartner(models.Model):
                 template_id.with_context(ctx).send_mail(self.id)
                 
                 self.message_post(body=_("LDAP user %s / %s created") % (self.ldap_membership_login, password))
+                
+                # Also update the membership is a new user was created.
+                self.pdsl_update_ldap_membership()
+                
             else:
                 # Generate a new password if required.
                 if force_reset_password:
