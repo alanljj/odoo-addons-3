@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+        <record id="seq_task_code" model="ir.sequence.type">
+            <field name="name">Task Code</field>
+            <field name="code">project.task</field>
+        </record>
+        <record id="seq_invoice" model="ir.sequence">
+            <field name="name">Task Code</field>
+            <field name="code">project.task</field>
+            <field name="padding">0</field>
+            <field name="prefix">TASK-</field>
+            <field name="suffix"></field>
+        </record>
+    </data>
+</openerp>
