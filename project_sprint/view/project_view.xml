@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<openerp>
+	<data>
+
+		<!-- Add not done filter to Task view, -->
+		<record id="view_task_search_filter_state" model="ir.ui.view">
+			<field name="name">project.task.search.form.user.story</field>
+			<field name="model">project.task</field>
+			<field name="inherit_id" ref="project.view_task_search_form" />
+			<field name="arch" type="xml">
+				<xpath expr="//filter[@string=&quot;New&quot;]" position="after">
+					<filter string="Open" name="filter_open" icon="terp-stage"
+                        domain="[('stage_id.sequence', '&lt;', 20)]" />
+					<filter string="Close/Cancel" name="filter_close" icon="terp-stage"
+						domain="[('stage_id.sequence', '&gt;=', 20)]" />
+					<separator/>
+                   <filter string="Active Sprint" name="filter_active_sprint" icon="terp-stage"
+                        domain="[('sprint_id.state', '=', 'open')]" />
+				</xpath>
+			</field>
+		</record>
+
+		<!-- Add group by Sprint to Task view, -->
+		<record id="view_task_search_group_by_sprint" model="ir.ui.view">
+			<field name="name">project.task.search.form.user.story</field>
+			<field name="model">project.task</field>
+			<field name="inherit_id" ref="project.view_task_search_form" />
+			<field name="arch" type="xml">
+				<xpath expr="//filter[@string=&quot;Stage&quot;]" position="after">
+					<field name="sprint_id" />
+					<filter string="Sprint" name="group_sprint_id" icon="terp-stage"
+						domain="[]" context="{'group_by':'sprint_id'}" />
+				</xpath>
+			</field>
+		</record>
+
+		<record id="view_task_tree_us" model="ir.ui.view">
+			<field name="name">project.task.tree.us</field>
+			<field name="model">project.task</field>
+			<field name="inherit_id" ref="project.view_task_tree2" />
+			<field name="arch" type="xml">
+				<xpath expr="//field[@name=&quot;stage_id&quot;]" position="after">
+					<field name="sprint_id" />
+				</xpath>
+			</field>
+		</record>
+		
+	</data>
+</openerp>

@@ -1,0 +1,294 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<openerp>
+	<data>
+
+		<!-- Show tasks related to sprint action -->
+		<record id="act_project_sprint_2_project_task_all" model="ir.actions.act_window">
+			<field name="res_model">project.task</field>
+			<field name="view_type">form</field>
+			<field name="name">Tasks</field>
+			<field name="view_mode">kanban,tree,form,calendar,gantt,graph</field>
+			<field name="context">{'search_default_sprint_id': [active_id],
+				'default_sprint_id': active_id}
+			</field>
+		</record>
+
+		<!-- +++++++++++ view in Tree +++++++++++++++++++++++++++ -->
+		<record model="ir.ui.view" id="project_sprint_tree_view">
+			<field name="name">project.sprint.tree</field>
+			<field name="model">project.sprint</field>
+			<field name="arch" type="xml">
+				<tree string="Sprint Kanban Tree">
+					<field name="name" />
+					<field name="project_id" />
+					<field name="description" />
+					<field name="datestart" />
+					<field name="dateend" />
+				</tree>
+			</field>
+		</record>
+
+		<!-- +++++++++++ view in Form +++++++++++++++++++++++++++ -->
+
+		<record model="ir.ui.view" id="project_sprint_form_view">
+			<field name="name">project.sprint.form</field>
+			<field name="model">project.sprint</field>
+			<field name="arch" type="xml">
+				<form string="Sprint Kanban Form" version="7.0">
+					<header>
+						<button name="set_open" string="Start" type="object"
+							states="draft" />
+						<field name="state" widget="statusbar" clickable="True"
+							options="{'fold_field': 'fold'}" />
+					</header>
+
+					<sheet string="Project">
+						<div class="oe_title">
+							<label for="name" class="oe_edit_only" />
+							<h1>
+								<field name="name" />
+							</h1>
+						</div>
+						<div class="oe_right oe_button_box" name="buttons" groups="base.group_user">
+							<button class="oe_inline oe_stat_button" type="action"
+								name="%(act_project_sprint_2_project_task_all)d" icon="fa-tasks">
+								<field string="Tasks" name="task_count" widget="statinfo" />
+							</button>
+						</div>
+						<group>
+							<group>
+								<field name="project_id" />
+								<field name="user_id" />
+								<field name="priority" groups="base.group_user" widget="priority" />
+							</group>
+							<group>
+								<field name="datestart" />
+								<field name="dateend" />
+							</group>
+						</group>
+						<label for="description" />
+						<field name="description" placeholder="Add a Description..." />
+					</sheet>
+
+					<div class="oe_chatter">
+						<field name="message_ids" widget="mail_thread" />
+						<field name="message_follower_ids" widget="mail_followers" />
+					</div>
+				</form>
+			</field>
+		</record>
+
+		<!-- +++++++++++ view in Kanban +++++++++++++++++++++++++++ -->
+		<record model="ir.ui.view" id="view_sprint_kanban">
+			<field name="name">project.sprint.kanban</field>
+			<field name="model">project.sprint</field>
+			<field name="arch" type="xml">
+
+				<kanban version="7.0" class="oe_background_grey">
+
+					<field name="name" />
+					<field name="state" />
+					<field name="project_id" />
+					<field name="color" />
+					<field name="members" />
+					<field name="user_id" />
+					<field name="description" />
+					<field name="priority" />
+					<field name="kanban_state" />
+					<field name="task_count" />
+
+					<templates>
+						<t t-name="kanban-box">
+							<div
+								t-attf-class="oe_kanban_color_#{kanban_getcolor(record.color.raw_value)} oe_kanban_card oe_kanban_project oe_kanban_global_click">
+								<div class="oe_dropdown_toggle oe_dropdown_kanban">
+									<span class="oe_e">í</span>
+									<ul class="oe_dropdown_menu">
+										<t t-if="widget.view.is_action_enabled('edit')">
+											<li>
+												<a type="edit">Edit...</a>
+											</li>
+										</t>
+										<t t-if="widget.view.is_action_enabled('delete')">
+											<li>
+												<a type="delete">Delete</a>
+											</li>
+										</t>
+										<li>
+											<ul class="oe_kanban_colorpicker" data-field="color" />
+										</li>
+									</ul>
+								</div>
+								<div class="oe_kanban_content">
+									<h4>
+										<field name="name" />
+									</h4>
+									<div class="oe_kanban_project_list">
+										<a name="%(act_project_sprint_2_project_task_all)d" type="action"
+											style="margin-right: 10px">
+											<t t-raw="record.task_count.raw_value" />
+											Tasks
+										</a>
+									</div>
+									<div>
+										<field name="project_id" />
+										<span t-if="record.datestart.raw_value">
+											<span class="oe_e">N</span>
+											<i>
+												<field name="datestart" />
+											</i>
+										</span>
+										<span>
+											<span class="oe_e">R</span>
+											<t t-if="record.dateend.raw_value" />
+											<t
+												t-if="record.dateend.raw_value and record.dateend.raw_value lt (new Date())"
+												t-set="red">oe_kanban_text_red</t>
+											<span t-attf-class="#{red || ''}">
+												<i>
+													<field name="dateend" />
+												</i>
+											</span>
+										</span>
+									</div>
+									<div class="oe_kanban_bottom_right">
+										<img
+											t-att-src="kanban_image('res.users', 'image_small', record.user_id.raw_value)"
+											t-att-title="record.user_id.value" width="24" height="24"
+											class="oe_kanban_avatar pull-right" />
+										<div class="pull-left" groups="base.group_user">
+											<field name="kanban_state" widget="kanban_state_selection" />
+											<field name="priority" widget="priority" />
+										</div>
+									</div>
+								</div>
+								<div class="oe_clear"></div>
+							</div>
+						</t>
+					</templates>
+
+				</kanban>
+			</field>
+		</record>
+
+		<!-- Add sprint_id field to Task Form -->
+		<record model="ir.ui.view" id="inherit_tasks_project_sprint_form_view">
+			<field name="name">inherit.tasks.project.sprint</field>
+			<field name="model">project.task</field>
+			<field name="inherit_id" ref="project.view_task_form2" />
+			<field name="arch" type="xml">
+				<xpath expr="//field[@name='categ_ids']" position="after">
+					<field name="sprint_id" />
+				</xpath>
+			</field>
+		</record>
+
+		<record id="view_project_sprint_search_form" model="ir.ui.view">
+			<field name="name">project.sprint.select</field>
+			<field name="model">project.sprint</field>
+			<field name="arch" type="xml">
+				<search string="Search Sprint">
+					<field name="name" string="Sprint Name" />
+					<filter string="Open" name="Current" domain="[('state', '=','open')]" />
+					<filter string="Pending" name="Pending" domain="[('state', '=','pending')]" />
+					<separator />
+					<filter string="Manager" domain="[('user_id','=',uid)]" />
+					<separator />
+					<field name="user_id" string="Project Manager" />
+					<group expand="0" string="Group By">
+						<filter string="Project" name="project" context="{'group_by':'project_id'}" />
+						<filter string="Assigned to" name="User" context="{'group_by':'user_id'}" />
+						<filter string="Stage" name="Stage" context="{'group_by':'state'}" />
+					</group>
+				</search>
+			</field>
+		</record>
+
+		<!--++++++++++++++++++++++++++Actions+++++++++++++++++++++++++++++++++++ -->
+
+		<record id="action_view_sprint" model="ir.actions.act_window">
+			<field name="name">Sprints</field>
+			<field name="res_model">project.sprint</field>
+			<field name="view_type">form</field>
+			<field name="domain">[]</field>
+			<field name="view_mode">kanban,tree,form</field>
+			<field name="view_id" ref="view_sprint_kanban" />
+			<field name="search_view_id" ref="view_project_sprint_search_form" />
+			<field name="context">{'search_default_Stage': 1}</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">Click to start a new Sprint.</p>
+			</field>
+		</record>
+
+		<record id="open_view_sprint_list_kanban" model="ir.actions.act_window.view">
+			<field name="sequence" eval="0" />
+			<field name="view_mode">kanban</field>
+			<field name="act_window_id" ref="action_view_sprint" />
+		</record>
+
+		<!-- Sprint menu -->
+		<menuitem id="project_sprint_menu" name="Sprint"
+			parent="project.menu_project_management" action="action_view_sprint"
+			sequence="7" />
+
+        <!-- Action to open backlog. -->
+        <record id="action_view_backlog" model="ir.actions.act_window">
+            <field name="name">Backlog</field>
+            <field name="res_model">project.task</field>
+            <field name="view_mode">kanban,tree,form,calendar,gantt,graph</field>
+            <field name="search_view_id" ref="project.view_task_search_form"/>
+            <field name="context">{'search_default_group_sprint_id': 1, 'search_default_filter_open': 1}</field>
+            <field name="help" type="html">
+                <p>
+                    Odoo's project management allows you to manage the pipeline
+                    of tasks in order to get things done efficiently. You can
+                    track progress, discuss on tasks, attach documents, etc.
+                </p>
+            </field>
+        </record>
+        <record id="open_view_backlog_list_kanban" model="ir.actions.act_window.view">
+            <field name="sequence" eval="0"/>
+            <field name="view_mode">kanban</field>
+            <field name="act_window_id" ref="action_view_backlog"/>
+        </record>
+        <record id="open_view_backlog_list_tree" model="ir.actions.act_window.view">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">tree</field>
+            <field name="act_window_id" ref="action_view_backlog"/>
+        </record>
+
+		<menuitem action="action_view_backlog" id="menu_action_view_backlog"
+			parent="project.menu_project_management" sequence="6" />
+			
+			
+        <!-- Action to open active sprint. -->
+        <record id="action_view_active_sprint" model="ir.actions.act_window">
+            <field name="name">Active Sprint(s)</field>
+            <field name="res_model">project.task</field>
+            <field name="view_mode">kanban,tree,form,calendar,gantt,graph</field>
+            <field name="search_view_id" ref="project.view_task_search_form"/>
+            <field name="context">{'search_default_filter_active_sprint': 1}</field>
+            <field name="help" type="html">
+                <p>
+                    Odoo's project management allows you to manage the pipeline
+                    of tasks in order to get things done efficiently. You can
+                    track progress, discuss on tasks, attach documents, etc.
+                </p>
+            </field>
+        </record>
+        <record id="open_view_active_sprint_list_kanban" model="ir.actions.act_window.view">
+            <field name="sequence" eval="0"/>
+            <field name="view_mode">kanban</field>
+            <field name="act_window_id" ref="action_view_active_sprint"/>
+        </record>
+        <record id="open_view_active_sprint_list_tree" model="ir.actions.act_window.view">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">tree</field>
+            <field name="act_window_id" ref="action_view_active_sprint"/>
+        </record>
+
+        <menuitem action="action_view_active_sprint" id="menu_action_view_active_sprint"
+            parent="project.menu_project_management" sequence="6" />
+
+	</data>
+</openerp>
