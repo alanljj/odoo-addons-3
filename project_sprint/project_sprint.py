@@ -13,10 +13,6 @@ class project_sprint(osv.Model):
         self.write(cr, uid, ids, {'state': 'cancelled'}, context=context)
         return True
 
-    def set_pending(self, cr, uid, ids, context=None):
-        self.write(cr, uid, ids, {'state': 'pending'}, context=context)
-        return True
-
     def set_open(self, cr, uid, ids, context=None):
         self.write(cr, uid, ids, {'state': 'open'}, context=context)
         return True
@@ -48,7 +44,6 @@ class project_sprint(osv.Model):
         'state': fields.selection([('draft', 'New'),
                                    ('open', 'In Progress'),
                                    ('cancelled', 'Cancelled'),
-                                   ('pending', 'Pending'),
                                    ('done', 'Done')],
                                   'Status', required=True,),
         'user_id': fields.many2one('res.users', 'Assigned to'),
