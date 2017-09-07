@@ -41,7 +41,7 @@
     <div class="header">
         <div class="row">
             <div class="col-xs-8">
-                <img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.logo" style="max-height: 45px;"/>
+                <img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.logo" style="max-height: 90px;"/>
             </div>
             <div class="col-xs-4" style="font-size:80%">
                 <span t-field="company.partner_id" t-field-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;name&quot;,&quot;address&quot;,&quot;phone&quot;,&quot;email&quot;], &quot;no_marker&quot;: false}"/>
