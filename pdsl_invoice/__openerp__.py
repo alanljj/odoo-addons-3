@@ -19,6 +19,7 @@ This module is compatible with OpenERP 8.0.
 """,
     "depends": [
         'account',
+        'sale',
         ],
     "data": [
         'pdsl_invoice_data.xml',
