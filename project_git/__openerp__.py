@@ -16,6 +16,8 @@ This module provide Gitlab Github integration for Project Tasks and Issues. When
 
 To ease migration, a script is also provided.
 
+If you have multiple database installed, you may need to add this module to server_wide_modules.
+
 """,
     "depends": [
         'project',

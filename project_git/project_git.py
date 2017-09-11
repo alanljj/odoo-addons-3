@@ -5,10 +5,12 @@ from email.message import Message
 import logging
 import psycopg2
 import re
+from werkzeug.exceptions import BadRequest
 
 from openerp import http, SUPERUSER_ID  # @UnresolvedImport
 import openerp
 from openerp.addons.mail.mail_message import decode  # @UnresolvedImport
+from openerp.http import db_monodb
 from openerp.osv import osv
 from openerp.tools import html_escape
 
@@ -69,9 +71,18 @@ class GitController(http.Controller):
         End-Point to receive gitlab hook calls. Will append a message to any
         matching Task or Issue related to the commit.
         """
-        # Get database registry from query fragment.
-        db = req.httprequest.args.get('db', req.db)
-        registry = openerp.registry(db)
+        # Get database registry from query fragment. When running multiple
+        # database, the database info may come from the request or HTTP fragment.
+        # When running only a single database, the database doesn't need to be
+        # declare.
+        dbname = req.db
+        if not dbname:
+            dbname = req.httprequest.args.get('db')
+        if not dbname:
+            dbname = db_monodb()
+        if not dbname:
+            return BadRequest()
+        registry = openerp.registry(dbname)
         
         context = {}
         
