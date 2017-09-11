@@ -2,50 +2,50 @@
 <openerp>
   <data>
     
-    <!-- Add task_code to task tree view. -->
+    <!-- Add code to task tree view. -->
     <record id="view_task_tree_us" model="ir.ui.view">
         <field name="name">project.task.tree.us</field>
         <field name="model">project.task</field>
         <field name="inherit_id" ref="project.view_task_tree2"/>
         <field name="arch" type="xml">
             <xpath expr='//field[@name="name"]' position="before">
-                <field name="task_code"/>
+                <field name="code"/>
             </xpath>
         </field>
     </record>
 
-    <!-- Add search by task_code in task views. -->
+    <!-- Add search by code in task views. -->
 	<record id="view_task_search_by_task_code" model="ir.ui.view">
 		<field name="name">project.task.search.task.code</field>
 		<field name="model">project.task</field>
 		<field name="inherit_id" ref="project.view_task_search_form" />
 		<field name="arch" type="xml">
 			<xpath expr="//field[@name=&quot;name&quot;]" position="before">
-				<field name="task_code" />
+				<field name="code" />
 			</xpath>
 		</field>
 	</record>
     
-    <!-- Add task_code field in Task kanban view. -->
+    <!-- Add code field in Task kanban view. -->
     <record id="view_task_kanban_inherit" model="ir.ui.view">
         <field name="name">project.task.kanban</field>
         <field name="model">project.task</field>
         <field name="inherit_id" ref="project.view_task_kanban"/>
         <field name="arch" type="xml">
             <xpath expr='//div[@class="oe_kanban_content"]/div/b/field[@name="name"]' position="before">
-                <field name="task_code"/>
+                <field name="code"/>
             </xpath>
         </field>
     </record> 
     
-    <!-- Add task_code to task form view. -->
+    <!-- Add code to task form view. -->
     <record model="ir.ui.view" id="inherit_tasks_form_view">
       <field name="name">inherit.project.task.form</field>
       <field name="model">project.task</field>
       <field name="inherit_id" ref="project.view_task_form2"/>
       <field name="arch" type="xml">
         <xpath expr='//sheet[@string="Task"]/h1/field[@name="name"]' position="before">
-            <field name="task_code" class="oe_inline"/>
+            <field name="code" class="oe_inline"/>
         </xpath>
       </field>
     </record>

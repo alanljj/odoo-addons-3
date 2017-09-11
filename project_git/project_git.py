@@ -122,7 +122,7 @@ class MailThread(osv.AbstractModel):
         routes = []
         if task_code_match:
             model = 'project.task'
-            thread_ids = self.pool[model].search(cr, uid, [('task_code', 'in', task_code_match)], context=context)
+            thread_ids = self.pool[model].search(cr, uid, [('code', 'in', task_code_match)], context=context)
             for thread_id in thread_ids:
                 route = self.message_route_verify(
                     cr, uid, message, message_dict,
