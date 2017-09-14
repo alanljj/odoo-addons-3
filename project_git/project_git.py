@@ -133,17 +133,14 @@ class MailThread(osv.AbstractModel):
                         'Routing mail from %s to %s with Message-Id %s: referenced: %s thread_id: %s, custom_values: %s, uid: %s',
                         email_from, email_to, message_id, model, thread_id, custom_values, uid)
                     routes.append(route)
-        return routes
+            return routes
     
     def message_route(self, cr, uid, message, message_dict, model=None, thread_id=None,
                       custom_values=None, context=None):
         # Execute new routing base on message content.
         routes = self.message_route_check_task_code(cr, uid, message, message_dict, model, thread_id, custom_values, context)
         if routes:
-            try:
-                routes.extend(super(MailThread, self).message_route(cr, uid, message, message_dict, model, thread_id, custom_values, context))
-            except:
-                pass
+            routes.extend(super(MailThread, self).message_route(cr, uid, message, message_dict, model, thread_id, custom_values, context))
             return routes
         # Call original and let exception propagate.
-        return routes.extend(super(MailThread, self).message_route(cr, uid, message, message_dict, model, thread_id, custom_values, context))
+        return super(MailThread, self).message_route(cr, uid, message, message_dict, model, thread_id, custom_values, context)
