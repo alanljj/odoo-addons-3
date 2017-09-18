@@ -2,7 +2,7 @@
 # Copyright(C) 2017 Patrik Dufresne Service Logiciel inc. (http://www.patrikdufresne.com).
 {
     "name": "Project Task Sequence",
-    "version": "8.0.1",
+    "version": "8.0.2",
     "author": "Patrik Dufresne Service Logiciel inc.",
     "website": "http://www.patrikdufresne.com/",
     "license": "AGPL-3",

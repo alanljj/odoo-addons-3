@@ -28,7 +28,7 @@ class project_task(osv.Model):
         ids = self.search(cr, SUPERUSER_ID, [('code', '=', '/')])
         for task in self.browse(cr, SUPERUSER_ID, ids):
             code = task.task_code or self.pool.get('ir.sequence').get(cr, SUPERUSER_ID, 'project.task') or '/'
-            task.write({'task_code': code}, {'code': code})
+            task.write({'task_code': code, 'code': code})
 
         sup = super(project_task, self)
         if hasattr(sup, 'init'):
