@@ -5,6 +5,6 @@
 # Copyright(C) 2015 Patrik Dufresne Service Logiciel (http://www.patrikdufresne.com).
 #
 ##############################################################################
-import account_invoice
+from . import account_invoice
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

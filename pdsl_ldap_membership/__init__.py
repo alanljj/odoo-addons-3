@@ -6,4 +6,4 @@
 #
 ##############################################################################
 
-import ldap_membership
+from . import ldap_membership

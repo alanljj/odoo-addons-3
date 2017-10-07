@@ -6,4 +6,4 @@
 #
 ##############################################################################
 
-import pdsl_fetchmail
+from . import pdsl_fetchmail

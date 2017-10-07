@@ -5,14 +5,10 @@
 # Copyright(C) 2015 Patrik Dufresne Service Logiciel (http://www.patrikdufresne.com).
 #
 ##############################################################################
-from model.pdsl_fetchmail import _parse_body, _format_body
 from collections import OrderedDict
-'''
-Created on Oct 7, 2015
-
-@author: ikus060
-'''
 import unittest
+
+from pdsl_fetchmail.model.pdsl_fetchmail import _parse_body, _format_body
 
 
 class Test(unittest.TestCase):
