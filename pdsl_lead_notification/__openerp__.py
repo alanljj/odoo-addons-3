@@ -2,7 +2,7 @@
 ##############################################################################
 #
 # PDSL fetchmail addons
-# Copyright(C) 2015 Patrik Dufresne Service Logiciel (http://www.patrikdufresne.com).
+# Copyright(C) 2017 Patrik Dufresne Service Logiciel (http://www.patrikdufresne.com).
 #
 ##############################################################################
 {
