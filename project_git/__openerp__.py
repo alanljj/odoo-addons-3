@@ -7,7 +7,7 @@
 ##############################################################################
 {
     "name": "Project Git Hook",
-    "version": "8.0.1",
+    "version": "8.0.2",
     "author": "Patrik Dufresne Service Logiciel inc.",
     "category": 'Tools',
     "description": """
@@ -21,7 +21,8 @@ If you have multiple database installed, you may need to add this module to serv
 """,
     "depends": [
         'project',
-        ],
+        'project_task_sequence',
+    ],
     "data": [],
     'installable': True,
     'active': False

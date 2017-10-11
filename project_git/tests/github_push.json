@@ -1,0 +1,241 @@
+{
+  "ref": "refs/heads/develop-8.0",
+  "before": "0000000000000000000000000000000000000000",
+  "after": "23621a51d4425fb063de61948c11c98910a2304b",
+  "created": true,
+  "deleted": false,
+  "forced": false,
+  "base_ref": null,
+  "compare": "https://github.com/ikus060/odoo-addons/compare/68d9c781a897^...23621a51d442",
+  "commits": [
+    {
+      "id": "68d9c781a8974e51aa6b49f2bc678199273f33e7",
+      "tree_id": "985bf99ae6d90b06b4016e96bb6facfd5f268266",
+      "distinct": true,
+      "message": "Project_git: Handle messages without commits. TASK-1",
+      "timestamp": "2017-10-11T11:50:44-04:00",
+      "url": "https://github.com/ikus060/odoo-addons/commit/68d9c781a8974e51aa6b49f2bc678199273f33e7",
+      "author": {
+        "name": "ikus060",
+        "email": "ikus060@ikus060-gb.patrikdufresne.com"
+      },
+      "committer": {
+        "name": "ikus060",
+        "email": "ikus060@ikus060-gb.patrikdufresne.com"
+      },
+      "added": [
+
+      ],
+      "removed": [
+
+      ],
+      "modified": [
+        "project_git/__openerp__.py",
+        "project_git/project_git.py"
+      ]
+    },
+    {
+      "id": "0bb155d2c02b0571201bf211ce2f0ac2c730927c",
+      "tree_id": "45b2397294e4c2c45444b35b2be862a09fd289ef",
+      "distinct": true,
+      "message": "Update copyright date in comments.",
+      "timestamp": "2017-10-11T12:08:47-04:00",
+      "url": "https://github.com/ikus060/odoo-addons/commit/0bb155d2c02b0571201bf211ce2f0ac2c730927c",
+      "author": {
+        "name": "ikus060",
+        "email": "ikus060@ikus060-gb.patrikdufresne.com"
+      },
+      "committer": {
+        "name": "ikus060",
+        "email": "ikus060@ikus060-gb.patrikdufresne.com"
+      },
+      "added": [
+
+      ],
+      "removed": [
+
+      ],
+      "modified": [
+        "pdsl_fetchmail/__init__.py",
+        "pdsl_fetchmail/__openerp__.py",
+        "pdsl_fetchmail/model/__init__.py",
+        "pdsl_fetchmail/model/pdsl_fetchmail.py",
+        "pdsl_fetchmail/model/test/test_pdsl_fetchmail.py",
+        "pdsl_invoice/__init__.py",
+        "pdsl_invoice/__openerp__.py",
+        "pdsl_invoice/account_invoice.py",
+        "pdsl_ldap_membership/__init__.py",
+        "pdsl_ldap_membership/__openerp__.py",
+        "pdsl_ldap_membership/ldap_membership.py",
+        "pdsl_lead_notification/__openerp__.py",
+        "project_git/__openerp__.py"
+      ]
+    },
+    {
+      "id": "23621a51d4425fb063de61948c11c98910a2304b",
+      "tree_id": "770746932efb7fb31dbba4884fb8f37d7b8f439f",
+      "distinct": true,
+      "message": "project_git: refactor to make it testable. TASK-2",
+      "timestamp": "2017-10-12T14:37:54-04:00",
+      "url": "https://github.com/ikus060/odoo-addons/commit/23621a51d4425fb063de61948c11c98910a2304b",
+      "author": {
+        "name": "ikus060",
+        "email": "ikus060@ikus060-gb.patrikdufresne.com"
+      },
+      "committer": {
+        "name": "ikus060",
+        "email": "ikus060@ikus060-gb.patrikdufresne.com"
+      },
+      "added": [
+
+      ],
+      "removed": [
+
+      ],
+      "modified": [
+        "project_git/project_git.py"
+      ]
+    }
+  ],
+  "head_commit": {
+    "id": "23621a51d4425fb063de61948c11c98910a2304b",
+    "tree_id": "770746932efb7fb31dbba4884fb8f37d7b8f439f",
+    "distinct": true,
+    "message": "project_git: refactor to make it testable. TASK-2",
+    "timestamp": "2017-10-12T14:37:54-04:00",
+    "url": "https://github.com/ikus060/odoo-addons/commit/23621a51d4425fb063de61948c11c98910a2304b",
+    "author": {
+      "name": "ikus060",
+      "email": "ikus060@ikus060-gb.patrikdufresne.com"
+    },
+    "committer": {
+      "name": "ikus060",
+      "email": "ikus060@ikus060-gb.patrikdufresne.com"
+    },
+    "added": [
+
+    ],
+    "removed": [
+
+    ],
+    "modified": [
+      "project_git/project_git.py"
+    ]
+  },
+  "repository": {
+    "id": 105818506,
+    "name": "odoo-addons",
+    "full_name": "ikus060/odoo-addons",
+    "owner": {
+      "name": "ikus060",
+      "email": "ikus060@gmail.com",
+      "login": "ikus060",
+      "id": 921251,
+      "avatar_url": "https://avatars3.githubusercontent.com/u/921251?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/ikus060",
+      "html_url": "https://github.com/ikus060",
+      "followers_url": "https://api.github.com/users/ikus060/followers",
+      "following_url": "https://api.github.com/users/ikus060/following{/other_user}",
+      "gists_url": "https://api.github.com/users/ikus060/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/ikus060/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/ikus060/subscriptions",
+      "organizations_url": "https://api.github.com/users/ikus060/orgs",
+      "repos_url": "https://api.github.com/users/ikus060/repos",
+      "events_url": "https://api.github.com/users/ikus060/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/ikus060/received_events",
+      "type": "User",
+      "site_admin": false
+    },
+    "private": false,
+    "html_url": "https://github.com/ikus060/odoo-addons",
+    "description": "Collection of odoo addons.",
+    "fork": false,
+    "url": "https://github.com/ikus060/odoo-addons",
+    "forks_url": "https://api.github.com/repos/ikus060/odoo-addons/forks",
+    "keys_url": "https://api.github.com/repos/ikus060/odoo-addons/keys{/key_id}",
+    "collaborators_url": "https://api.github.com/repos/ikus060/odoo-addons/collaborators{/collaborator}",
+    "teams_url": "https://api.github.com/repos/ikus060/odoo-addons/teams",
+    "hooks_url": "https://api.github.com/repos/ikus060/odoo-addons/hooks",
+    "issue_events_url": "https://api.github.com/repos/ikus060/odoo-addons/issues/events{/number}",
+    "events_url": "https://api.github.com/repos/ikus060/odoo-addons/events",
+    "assignees_url": "https://api.github.com/repos/ikus060/odoo-addons/assignees{/user}",
+    "branches_url": "https://api.github.com/repos/ikus060/odoo-addons/branches{/branch}",
+    "tags_url": "https://api.github.com/repos/ikus060/odoo-addons/tags",
+    "blobs_url": "https://api.github.com/repos/ikus060/odoo-addons/git/blobs{/sha}",
+    "git_tags_url": "https://api.github.com/repos/ikus060/odoo-addons/git/tags{/sha}",
+    "git_refs_url": "https://api.github.com/repos/ikus060/odoo-addons/git/refs{/sha}",
+    "trees_url": "https://api.github.com/repos/ikus060/odoo-addons/git/trees{/sha}",
+    "statuses_url": "https://api.github.com/repos/ikus060/odoo-addons/statuses/{sha}",
+    "languages_url": "https://api.github.com/repos/ikus060/odoo-addons/languages",
+    "stargazers_url": "https://api.github.com/repos/ikus060/odoo-addons/stargazers",
+    "contributors_url": "https://api.github.com/repos/ikus060/odoo-addons/contributors",
+    "subscribers_url": "https://api.github.com/repos/ikus060/odoo-addons/subscribers",
+    "subscription_url": "https://api.github.com/repos/ikus060/odoo-addons/subscription",
+    "commits_url": "https://api.github.com/repos/ikus060/odoo-addons/commits{/sha}",
+    "git_commits_url": "https://api.github.com/repos/ikus060/odoo-addons/git/commits{/sha}",
+    "comments_url": "https://api.github.com/repos/ikus060/odoo-addons/comments{/number}",
+    "issue_comment_url": "https://api.github.com/repos/ikus060/odoo-addons/issues/comments{/number}",
+    "contents_url": "https://api.github.com/repos/ikus060/odoo-addons/contents/{+path}",
+    "compare_url": "https://api.github.com/repos/ikus060/odoo-addons/compare/{base}...{head}",
+    "merges_url": "https://api.github.com/repos/ikus060/odoo-addons/merges",
+    "archive_url": "https://api.github.com/repos/ikus060/odoo-addons/{archive_format}{/ref}",
+    "downloads_url": "https://api.github.com/repos/ikus060/odoo-addons/downloads",
+    "issues_url": "https://api.github.com/repos/ikus060/odoo-addons/issues{/number}",
+    "pulls_url": "https://api.github.com/repos/ikus060/odoo-addons/pulls{/number}",
+    "milestones_url": "https://api.github.com/repos/ikus060/odoo-addons/milestones{/number}",
+    "notifications_url": "https://api.github.com/repos/ikus060/odoo-addons/notifications{?since,all,participating}",
+    "labels_url": "https://api.github.com/repos/ikus060/odoo-addons/labels{/name}",
+    "releases_url": "https://api.github.com/repos/ikus060/odoo-addons/releases{/id}",
+    "deployments_url": "https://api.github.com/repos/ikus060/odoo-addons/deployments",
+    "created_at": 1507151273,
+    "updated_at": "2017-10-04T21:15:41Z",
+    "pushed_at": 1507833598,
+    "git_url": "git://github.com/ikus060/odoo-addons.git",
+    "ssh_url": "git@github.com:ikus060/odoo-addons.git",
+    "clone_url": "https://github.com/ikus060/odoo-addons.git",
+    "svn_url": "https://github.com/ikus060/odoo-addons",
+    "homepage": null,
+    "size": 145,
+    "stargazers_count": 0,
+    "watchers_count": 0,
+    "language": "Python",
+    "has_issues": true,
+    "has_projects": true,
+    "has_downloads": true,
+    "has_wiki": true,
+    "has_pages": false,
+    "forks_count": 0,
+    "mirror_url": null,
+    "open_issues_count": 0,
+    "forks": 0,
+    "open_issues": 0,
+    "watchers": 0,
+    "default_branch": "9.0",
+    "stargazers": 0,
+    "master_branch": "9.0"
+  },
+  "pusher": {
+    "name": "ikus060",
+    "email": "ikus060@gmail.com"
+  },
+  "sender": {
+    "login": "ikus060",
+    "id": 921251,
+    "avatar_url": "https://avatars3.githubusercontent.com/u/921251?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/ikus060",
+    "html_url": "https://github.com/ikus060",
+    "followers_url": "https://api.github.com/users/ikus060/followers",
+    "following_url": "https://api.github.com/users/ikus060/following{/other_user}",
+    "gists_url": "https://api.github.com/users/ikus060/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/ikus060/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/ikus060/subscriptions",
+    "organizations_url": "https://api.github.com/users/ikus060/orgs",
+    "repos_url": "https://api.github.com/users/ikus060/repos",
+    "events_url": "https://api.github.com/users/ikus060/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/ikus060/received_events",
+    "type": "User",
+    "site_admin": false
+  }
+}

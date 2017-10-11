@@ -1,0 +1,71 @@
+{
+  "after": "0bb155d2c02b0571201bf211ce2f0ac2c730927c", 
+  "before": "68d9c781a8974e51aa6b49f2bc678199273f33e7", 
+  "checkout_sha": "0bb155d2c02b0571201bf211ce2f0ac2c730927c", 
+  "commits": [
+    {
+      "added": [], 
+      "author": {
+        "email": "ikus060@ikus060-gb.patrikdufresne.com", 
+        "name": "ikus060"
+      }, 
+      "id": "0bb155d2c02b0571201bf211ce2f0ac2c730927c", 
+      "message": "Update copyright date in comments. TASK-1", 
+      "modified": [
+        "pdsl_fetchmail/__init__.py", 
+        "pdsl_fetchmail/__openerp__.py", 
+        "pdsl_fetchmail/model/__init__.py", 
+        "pdsl_fetchmail/model/pdsl_fetchmail.py", 
+        "pdsl_fetchmail/model/test/test_pdsl_fetchmail.py", 
+        "pdsl_invoice/__init__.py", 
+        "pdsl_invoice/__openerp__.py", 
+        "pdsl_invoice/account_invoice.py", 
+        "pdsl_ldap_membership/__init__.py", 
+        "pdsl_ldap_membership/__openerp__.py", 
+        "pdsl_ldap_membership/ldap_membership.py", 
+        "pdsl_lead_notification/__openerp__.py", 
+        "project_git/__openerp__.py"
+      ], 
+      "removed": [], 
+      "timestamp": "2017-10-11T12:08:47-04:00", 
+      "url": "http://git.patrikdufresne.com/pdsl/odoo-addons/commit/0bb155d2c02b0571201bf211ce2f0ac2c730927c"
+    }
+  ], 
+  "event_name": "push", 
+  "message": null, 
+  "object_kind": "push", 
+  "project": {
+    "avatar_url": null, 
+    "ci_config_path": null, 
+    "default_branch": "8.0", 
+    "description": "This project regroups multiple addons for Odoo (OpenERP).", 
+    "git_http_url": "http://git.patrikdufresne.com/pdsl/odoo-addons.git", 
+    "git_ssh_url": "git@git.patrikdufresne.com:pdsl/odoo-addons.git", 
+    "homepage": "http://git.patrikdufresne.com/pdsl/odoo-addons", 
+    "http_url": "http://git.patrikdufresne.com/pdsl/odoo-addons.git", 
+    "name": "odoo-addons", 
+    "namespace": "PDSL", 
+    "path_with_namespace": "pdsl/odoo-addons", 
+    "ssh_url": "git@git.patrikdufresne.com:pdsl/odoo-addons.git", 
+    "url": "git@git.patrikdufresne.com:pdsl/odoo-addons.git", 
+    "visibility_level": 20, 
+    "web_url": "http://git.patrikdufresne.com/pdsl/odoo-addons"
+  }, 
+  "project_id": 28, 
+  "ref": "refs/heads/develop-8.0", 
+  "repository": {
+    "description": "This project regroups multiple addons for Odoo (OpenERP).", 
+    "git_http_url": "http://git.patrikdufresne.com/pdsl/odoo-addons.git", 
+    "git_ssh_url": "git@git.patrikdufresne.com:pdsl/odoo-addons.git", 
+    "homepage": "http://git.patrikdufresne.com/pdsl/odoo-addons", 
+    "name": "odoo-addons", 
+    "url": "git@git.patrikdufresne.com:pdsl/odoo-addons.git", 
+    "visibility_level": 20
+  }, 
+  "total_commits_count": 1, 
+  "user_avatar": "/uploads/-/system/user/avatar/2/img_msn__copy_.png", 
+  "user_email": "patrik@patrikdufresne.com", 
+  "user_id": 2, 
+  "user_name": "Patrik Dufresne", 
+  "user_username": "ikus060"
+}
