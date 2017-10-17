@@ -24,6 +24,7 @@ If you have multiple database installed, you may need to add this module to serv
         'project_task_sequence',
     ],
     "data": [],
+    'images': ['images/main_screenshot.png'],
     'installable': True,
     'active': False
 }

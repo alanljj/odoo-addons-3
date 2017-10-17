@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<!-- Git Commit subtypes for messaging / Chatter -->
+		<record id="mt_git_commit" model="mail.message.subtype">
+			<field name="name">Git Commit</field>
+			<field name="res_model">project.task</field>
+			<field name="default" eval="False" />
+			<field name="description">Git Commit</field>
+		</record>
+	</data>
+</openerp>

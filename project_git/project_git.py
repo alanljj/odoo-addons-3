@@ -32,8 +32,6 @@ def decode_header(message, header, separator=' '):
 
 class GitController(http.Controller):  # @UndefinedVariable
 
-
-
     @http.route('/git-hook', type='json', auth='none')
     def receive(self, req):
         """
@@ -80,15 +78,18 @@ class MailThread(osv.AbstractModel):
             return "Mention by %s in commit %s" % (commit.get('author', {}).get('name', ''), commit.get('id'))
 
         def _body(commit):
-            body = "<h4>"
-            body += "You can view, comment on, or merge this pull request online at:"
-            body += "<h4>"
-            body += "<p>&nbsp;&nbsp;"
-            body += '<a href="%s">%s</a>' % (commit['url'], commit['url'])
+            body = "<p>"
+            body += html_escape(commit['message']).replace('\r\n', '<br/>').replace('\r', '<br/>').replace('\n', '<br/>')
             body += "</p>"
 
-            body = "<h4>Commit Summary<h4>"
-            body = html_escape(commit['message']).replace('\r\n', '<br/>')
+            body += "<hr/>"
+
+            body += "<h4>"
+            body += "You can view, comment on, or merge this pull request online at:"
+            body += "</h4>"
+            body += "<p>&nbsp;&nbsp;"
+            body += '<a href="%s">%s</a>' % (commit['url'], commit['id'])
+            body += "</p>"
 
             # TODO include file changes
 
