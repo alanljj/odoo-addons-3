@@ -15,7 +15,7 @@ class project_task(osv.Model):
     _defaults = {
         'code': lambda obj, cr, uid, context: '/',
     }
-    
+
     @api.v7
     def create(self, cr, uid, vals, context=None):
         if vals.get('code', '/') == '/':
@@ -27,7 +27,10 @@ class project_task(osv.Model):
         # set task_code if not defined.
         ids = self.search(cr, SUPERUSER_ID, [('code', '=', '/')])
         for task in self.browse(cr, SUPERUSER_ID, ids):
-            code = task.task_code or self.pool.get('ir.sequence').get(cr, SUPERUSER_ID, 'project.task') or '/'
+            if task.task_code and task.task_code != '/':
+                code = task.task_code
+            else:
+                code = self.pool.get('ir.sequence').get(cr, SUPERUSER_ID, 'project.task') or '/'
             task.write({'task_code': code, 'code': code})
 
         sup = super(project_task, self)
