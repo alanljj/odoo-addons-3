@@ -98,7 +98,7 @@ class TestProjectGit(openerp.tests.common.HttpCase):
         self.opener.addheaders.append(('Content-Type', 'application/json'))
         self.opener.addheaders.append(('Accept', 'text/plain'))
         data = pkg_resources.resource_string(__name__, 'gitlab_push.json')  # @UndefinedVariable
-        thread_ids = self.mail_thread.message_process_git_commits(cr, uid, data, context={})
+        thread_ids = self.mail_thread.git_process_commits(cr, uid, data, context={})
         self.assertEqual(len(thread_ids), 1, 'Commit message should be added to TASK-1 thread')
 
     def test_message_process_git_commits_with_gitlab_repository_update(self):
@@ -110,7 +110,7 @@ class TestProjectGit(openerp.tests.common.HttpCase):
         self.opener.addheaders.append(('Content-Type', 'application/json'))
         self.opener.addheaders.append(('Accept', 'text/plain'))
         data = pkg_resources.resource_string(__name__, 'gitlab_repository_update.json')  # @UndefinedVariable
-        thread_ids = self.mail_thread.message_process_git_commits(cr, uid, data, context={})
+        thread_ids = self.mail_thread.git_process_commits(cr, uid, data, context={})
         self.assertEqual(len(thread_ids), 0, 'Repository Update events should be ignored.')
 
     def test_message_process_git_commits_with_github_push(self):
@@ -126,5 +126,5 @@ class TestProjectGit(openerp.tests.common.HttpCase):
         self.opener.addheaders.append(('Content-Type', 'application/json'))
         self.opener.addheaders.append(('Accept', 'text/plain'))
         data = pkg_resources.resource_string(__name__, 'github_push.json')  # @UndefinedVariable
-        thread_ids = self.mail_thread.message_process_git_commits(cr, uid, data, context={})
+        thread_ids = self.mail_thread.git_process_commits(cr, uid, data, context={})
         self.assertEqual(len(thread_ids), 2, 'Commit(s) message should be added to TASK-1 and TASK-2 thread')

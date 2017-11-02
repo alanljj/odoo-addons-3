@@ -6,7 +6,7 @@
 #
 ##############################################################################
 {
-    "name": "Project Git Hook",
+    "name": "Project Git webhook",
     "version": "8.0.2",
     "author": "Patrik Dufresne Service Logiciel inc.",
     "category": 'Tools',
@@ -23,7 +23,7 @@ If you have multiple database installed, you may need to add this module to serv
         'project',
         'project_task_sequence',
     ],
-    "data": [],
+    "data": ['data/project_git_data.xml'],
     'images': ['images/main_screenshot.png'],
     'installable': True,
     'active': False

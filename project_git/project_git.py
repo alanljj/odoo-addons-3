@@ -8,11 +8,13 @@ import re
 from werkzeug.exceptions import BadRequest
 
 from openerp import http, SUPERUSER_ID  # @UnresolvedImport
+from openerp import models, api  # @UnresolvedImport
 import openerp
 from openerp.addons.mail.mail_message import decode  # @UnresolvedImport
 from openerp.http import db_monodb
-from openerp.osv import osv
 from openerp.tools import html_escape
+from openerp.osv import osv
+
 
 try:
     import simplejson as json
@@ -54,7 +56,7 @@ class GitController(http.Controller):  # @UndefinedVariable
         # Extract
         with registry.cursor() as cr:
             mail_thread = registry['mail.thread']
-            mail_thread.message_process_git_commits(cr, SUPERUSER_ID, req.jsonrequest, context={})
+            mail_thread.git_process_commits(cr, SUPERUSER_ID, req.jsonrequest, context={})
         return True
 
 
@@ -64,7 +66,14 @@ class MailThread(osv.AbstractModel):
     _name = 'mail.thread'
     _inherit = ['mail.thread']
 
-    def message_process_git_commits(self, cr, uid, data, context=None):
+    def git_append_commit_message(self, cr, uid, thread_id, message_dict, context=None):
+        """
+        Append the given message to the tasks using a specific subtype.
+        """
+        context = dict(context or {})
+        return self.message_post(cr, uid, thread_id, subtype='project_git.mt_git_commit', context=context, **message_dict)
+
+    def git_process_commits(self, cr, uid, data, context=None):
         """
         Specific implementation used to receive commit message from git hook
         and convert them into messages.
@@ -128,68 +137,37 @@ class MailThread(osv.AbstractModel):
                 messages.append(msg_txt)
             return messages
 
-        context = context or {}
-        context['commits'] = True
+        context = dict(context or {})
 
-        # For each commit received, process it as a new email message.
-        thread_ids = []
+        # For each commit received, process it as a new message.
+        all_thread_ids = []
         for msg_txt in msg_from_commits(data):
             msg = self.message_parse(
                 cr, uid, msg_txt, save_original=False, context=context)
-            routes = self.message_route(
-                cr, uid, msg_txt, msg, context=context)
+            # Try to find corresponding thread ids
+            routes = self.git_find_threads(cr, uid, msg, context=context)
             if not routes:
                 _logger.info('git-hook Message-Id %s: cannot be routed', msg['message_id'])
                 continue
-            thread_id = self.message_route_process(
-                cr, uid, msg_txt, msg, routes, context=context)
-            thread_ids.append(thread_id)
-        return thread_ids
 
-    def message_route_check_task_code(self, cr, uid, message, message_dict, model=None, thread_id=None,
-                                      custom_values=None, context=None):
+            # Append the commit message to all matching task.
+            for model, thread_id in routes:
+                context['thread_model'] = model
+                self.git_append_commit_message(cr, uid, thread_id, msg, context=context)
+                _logger.info('git-hook Message-Id %s: appended to thread_ids: %s', msg['message_id'], thread_id)
+                all_thread_ids.append(thread_id)
+
+        return all_thread_ids
+
+    def git_find_threads(self, cr, uid, message_dict, context=None):
         """
         Check if the given message has reference to a task code.
         """
-        message_id = message.get('Message-Id')
-        email_from = decode_header(message, 'From')
-        email_to = decode_header(message, 'To')
         body = message_dict.get('body')
-        task_code_match = task_code_re.findall(body)
-
-        # Check if the mail matches a task code.
+        task_codes = task_code_re.findall(body)
         routes = []
-        if task_code_match:
-            model = 'project.task'
-            thread_ids = self.pool[model].search(
-                cr, uid, [('code', 'in', task_code_match)], context=context)
-            for thread_id in thread_ids:
-                route = self.message_route_verify(
-                    cr, uid, message, message_dict,
-                    (model, thread_id, custom_values, uid, False),
-                    update_author=True, assert_model=False, create_fallback=True, context=context)
-                if route:
-                    _logger.info(
-                        'Routing mail from %s to %s with Message-Id %s: referenced: %s thread_id: %s, custom_values: %s, uid: %s',
-                        email_from, email_to, message_id, model, thread_id, custom_values, uid)
-                    routes.append(route)
-        return routes
-
-    def message_route(self, cr, uid, message, message_dict, model=None, thread_id=None,
-                      custom_values=None, context=None):
-        context = context or {}
-
-        # Execute new routing base on message content.
-        routes = self.message_route_check_task_code(
-            cr, uid, message, message_dict, model, thread_id, custom_values, context)
-
-        if context.get('commits', False):
-            # When handling commits message, don't fail if other message_route are not found.
-            try:
-                routes.extend(super(MailThread, self).message_route(cr, uid, message, message_dict, model, thread_id, custom_values, context))
-            except ValueError:
-                pass
-        else:
-            # Call original and let exception propagate.
-            routes.extend(super(MailThread, self).message_route(cr, uid, message, message_dict, model, thread_id, custom_values, context))
+        if task_codes:
+            thread_ids = self.pool['project.task'].search(
+                cr, uid, [('code', 'in', task_codes)], context=context)
+            routes.extend([('project.task', i) for i in thread_ids])
         return routes
