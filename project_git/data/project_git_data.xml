@@ -8,5 +8,14 @@
 			<field name="default" eval="False" />
 			<field name="description">Git Commit</field>
 		</record>
+		<!-- Project-related subtypes for messaging / Chatter -->
+        <record id="mt_project_git_commit" model="mail.message.subtype">
+            <field name="name">Git Commit</field>
+            <field name="sequence">10</field>
+            <field name="res_model">project.project</field>
+            <field name="default" eval="False"/>
+            <field name="parent_id" eval="ref('mt_git_commit')"/>
+            <field name="relation_field">project_id</field>
+        </record>
 	</data>
 </openerp>
