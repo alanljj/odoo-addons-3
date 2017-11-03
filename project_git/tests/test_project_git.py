@@ -15,6 +15,7 @@ class TestProjectGit(openerp.tests.common.HttpCase):
         self.project_task = self.registry('project.task')
         self.project_project = self.registry('project.project')
         self.mail_thread = self.registry('mail.thread')
+        self.mail_message = self.registry('mail.message')
 
         cr, uid = self.cr, self.uid
 
@@ -85,7 +86,7 @@ class TestProjectGit(openerp.tests.common.HttpCase):
         self.opener.addheaders.append(('Accept', 'text/plain'))
         self._url_open_json("/git-hook", data)
 
-    def test_message_process_git_commits_with_gitlab_push(self):
+    def test_git_process_commits_with_gitlab_push(self):
         """
         Test handling of push event.
         """
@@ -94,26 +95,38 @@ class TestProjectGit(openerp.tests.common.HttpCase):
         # Make sure a tasks exists
         tasks = self.project_task.search(cr, uid, [('code', '=', "TASK-1")])
         self.assertEqual(len(tasks), 1, 'task with task code TASK-1 should already exists.')
+        # Make sure the task has only 2 messageé
+        task = self.project_task.browse(cr, uid, self.task_1_id)
+        self.assertEqual(len(task.message_ids), 1, 'TASK-1 should have 2 messages before the test.')
 
+        # Send git payload.
         self.opener.addheaders.append(('Content-Type', 'application/json'))
         self.opener.addheaders.append(('Accept', 'text/plain'))
         data = pkg_resources.resource_string(__name__, 'gitlab_push.json')  # @UndefinedVariable
-        thread_ids = self.mail_thread.git_process_commits(cr, uid, data, context={})
-        self.assertEqual(len(thread_ids), 1, 'Commit message should be added to TASK-1 thread')
+        msg_ids = self.mail_thread.git_process_commits(cr, uid, data, context={})
+        self.assertEqual(len(msg_ids), 1, 'Commit message should be added to TASK-1 thread')
 
-    def test_message_process_git_commits_with_gitlab_repository_update(self):
+        # Check if a message is appended to the task
+        task.refresh()
+        self.assertEqual(len(task.message_ids), 2, 'TASK-1 should have 3 messages.')
+        # TODO Check the message author
+
+    def test_git_process_commits_with_gitlab_repository_update(self):
         """
         Test handling of repository update.
         """
         cr, uid = self.cr, self.uid
 
+        # Send git payload.
         self.opener.addheaders.append(('Content-Type', 'application/json'))
         self.opener.addheaders.append(('Accept', 'text/plain'))
         data = pkg_resources.resource_string(__name__, 'gitlab_repository_update.json')  # @UndefinedVariable
-        thread_ids = self.mail_thread.git_process_commits(cr, uid, data, context={})
-        self.assertEqual(len(thread_ids), 0, 'Repository Update events should be ignored.')
 
-    def test_message_process_git_commits_with_github_push(self):
+        # Should not create messages.
+        msg_ids = self.mail_thread.git_process_commits(cr, uid, data, context={})
+        self.assertEqual(len(msg_ids), 0, 'Repository Update events should be ignored.')
+
+    def test_git_process_commits_with_github_push(self):
         """
         Test handling of push event.
         """
@@ -122,9 +135,18 @@ class TestProjectGit(openerp.tests.common.HttpCase):
         # Make sure a tasks exists
         tasks = self.project_task.search(cr, uid, [('code', '=', "TASK-2")])
         self.assertEqual(len(tasks), 1, 'task with task code TASK-2 should already exists.')
+        # Make sure the task has only 2 messageé
+        task1 = self.project_task.browse(cr, uid, self.task_2_id)
+        self.assertEqual(len(task1.message_ids), 1, 'TASK-2 should have 2 messages before the test.')
 
+        # Send git payload.
         self.opener.addheaders.append(('Content-Type', 'application/json'))
         self.opener.addheaders.append(('Accept', 'text/plain'))
         data = pkg_resources.resource_string(__name__, 'github_push.json')  # @UndefinedVariable
-        thread_ids = self.mail_thread.git_process_commits(cr, uid, data, context={})
-        self.assertEqual(len(thread_ids), 2, 'Commit(s) message should be added to TASK-1 and TASK-2 thread')
+
+        # Check result
+        msg_ids = self.mail_thread.git_process_commits(cr, uid, data, context={})
+        self.assertEqual(len(msg_ids), 2, 'Commit(s) message should be added to TASK-1 and TASK-2 thread')
+        # Check if a message is appended to the task
+        task1.refresh()
+        self.assertEqual(len(task1.message_ids), 2, 'TASK-2 should have 3 messages.')
