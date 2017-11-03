@@ -71,6 +71,15 @@ class MailThread(osv.AbstractModel):
         Append the given message to the tasks using a specific subtype.
         """
         context = dict(context or {})
+        email_from = message_dict.get('from')
+        model = context.get('thread_model', False) if self._name == 'mail.thread' else self._name
+
+        # Find the right author
+        author_ids = self._find_partner_from_emails(cr, uid, thread_id, [email_from], model=model, context=context)
+        if author_ids:
+            author_id = author_ids[0]
+            message_dict['author_id'] = author_id
+
         return self.message_post(cr, uid, thread_id, subtype='project_git.mt_git_commit', context=context, **message_dict)
 
     def git_process_commits(self, cr, uid, data, context=None):
@@ -140,10 +149,11 @@ class MailThread(osv.AbstractModel):
         context = dict(context or {})
 
         # For each commit received, process it as a new message.
-        all_thread_ids = []
+        msg_ids = []
         for msg_txt in msg_from_commits(data):
             msg = self.message_parse(
                 cr, uid, msg_txt, save_original=False, context=context)
+
             # Try to find corresponding thread ids
             routes = self.git_find_threads(cr, uid, msg, context=context)
             if not routes:
@@ -153,11 +163,10 @@ class MailThread(osv.AbstractModel):
             # Append the commit message to all matching task.
             for model, thread_id in routes:
                 context['thread_model'] = model
-                self.git_append_commit_message(cr, uid, thread_id, msg, context=context)
+                msg_ids.append(self.git_append_commit_message(cr, uid, thread_id, msg, context=context))
                 _logger.info('git-hook Message-Id %s: appended to thread_ids: %s', msg['message_id'], thread_id)
-                all_thread_ids.append(thread_id)
 
-        return all_thread_ids
+        return msg_ids
 
     def git_find_threads(self, cr, uid, message_dict, context=None):
         """
