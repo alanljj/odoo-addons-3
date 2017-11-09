@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 # Copyright(C) 2017 Patrik Dufresne Service Logiciel inc. (http://www.patrikdufresne.com).
-
 from openerp.osv import osv, fields
 
 
@@ -20,38 +19,40 @@ class project_sprint(osv.Model):
 
     _name = 'project.sprint'
     _inherit = ['mail.thread', 'ir.needaction_mixin']
-    
+
     def _task_count(self, cr, uid, ids, field_name, arg, context=None):
         task = self.pool['project.task']
         return {
-            sprint_id: task.search_count(cr,uid, [('sprint_id', '=', sprint_id)], context=context)
+            sprint_id: task.search_count(cr, uid, [('sprint_id', '=', sprint_id)], context=context)
             for sprint_id in ids
         }
 
     _columns = {
         'name': fields.char('Name', 264, required=True),
         'project_id': fields.many2one('project.project', 'Project',
-                                      ondelete="cascade"),
+                                      ondelete="set null", track_visibility='onchange'),
         'description': fields.text('Description'),
-        'datestart': fields.date('Start Date'),
-        'dateend': fields.date('End Date'),
+        'datestart': fields.date('Start Date', track_visibility='onchange'),
+        'dateend': fields.date('End Date', track_visibility='onchange'),
         'color': fields.integer('Color Index'),
         'members': fields.many2many('res.users', 'project_user_rel',
                                     'project_id', 'uid', 'Project Members',
                                     states={'close': [('readonly', True)],
                                             'cancelled': [('readonly', True)],
                                             }),
-        'priority': fields.selection([('0','Low'), ('1','Normal'), ('2','High')], 'Priority', select=True),
+        'priority': fields.selection([('0', 'Low'), ('1', 'Normal'), ('2', 'High')], 'Priority', select=True),
         'state': fields.selection([('draft', 'New'),
                                    ('open', 'In Progress'),
                                    ('cancelled', 'Cancelled'),
                                    ('done', 'Done')],
-                                  'Status', required=True,),
+                                  'Status', required=True,
+                                  track_visibility='onchange', ),
         'user_id': fields.many2one('res.users', 'Assigned to'),
         'kanban_state': fields.selection([('normal', 'Normal'),
                                           ('blocked', 'Blocked'),
                                           ('done', 'Ready To Pull')],
                                          'Kanban State',
+                                         track_visibility='onchange',
                                          help="""A task's kanban state indicate
                                                  special situations
                                                  affecting it:\n
@@ -101,5 +102,11 @@ class project_task(osv.Model):
     _inherit = 'project.task'
 
     _columns = {
-        'sprint_id': fields.many2one('project.sprint', 'Sprint', ondelete="cascade"),
+        'sprint_id': fields.many2one('project.sprint', 'Sprint', ondelete='set null', track_visibility='onchange'),
+    }
+
+    _track = {
+        'sprint_id': {
+            'project_sprint.mt_task_sprint': lambda self, cr, uid, obj, ctx=None: obj.sprint_id and obj.sprint_id.id,
+        },
     }

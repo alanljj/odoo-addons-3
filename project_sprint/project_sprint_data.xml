@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!-- Task-related subtypes for messaging / Chatter -->
+        <record id="mt_task_sprint" model="mail.message.subtype">
+            <field name="name">Sprint Changed</field>
+            <field name="res_model">project.task</field>
+            <field name="default" eval="False"/>
+            <field name="hidden" eval="False"/>
+            <field name="description">Sprint Changed</field>
+        </record>
+        <!-- Project-related subtypes for messaging / Chatter -->
+        <record id="mt_project_task_sprint" model="mail.message.subtype">
+            <field name="name">Sprint Changed</field>
+            <field name="sequence">10</field>
+            <field name="res_model">project.project</field>
+            <field name="default" eval="False"/>
+            <field name="hidden" eval="False"/>
+            <field name="parent_id" eval="ref('mt_task_sprint')"/>
+            <field name="relation_field">project_id</field>
+        </record>
+    </data>
+</openerp>

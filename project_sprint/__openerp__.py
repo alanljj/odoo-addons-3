@@ -18,7 +18,8 @@ Provide Sprint kanban view to Project module to allow planning of task using Agi
         "security/security_project_sprint.xml",
         "security/ir.model.access.csv",
         "view/project_sprint_view.xml",
-        "view/project_view.xml"
+        "view/project_view.xml",
+        "project_sprint_data.xml",
     ],
     "installable": True,
     "active": False
