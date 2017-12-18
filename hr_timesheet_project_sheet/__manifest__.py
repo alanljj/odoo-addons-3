@@ -4,12 +4,14 @@
 
 {
     'name': 'Project Timesheets',
-    'version': '1.1',
+    'version': '10.0.2.0.0',
     'category': 'Human Resources',
     'sequence': 80,
     'summary': 'Timesheets, Activities',
     'description': """TODO""",
+    'author': 'Patrik Dufresne',
     'website': 'http://www.patrikdufresne.com',
+    'company': 'Patrik Dufresne Service Logiciel inc.',
     'depends': [
         'hr_timesheet',
         'project',
