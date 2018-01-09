@@ -160,7 +160,7 @@
             </field>
         </record>
 
-        <menuitem id="menu_hr_project_timesheet_root" name="Project timesheet" parent="project.menu_main_pm" sequence="7"/>
+        <menuitem id="menu_hr_project_timesheet_root" name="Project Timesheet" parent="project.menu_main_pm" sequence="7"/>
 
         <menuitem action="act_hr_timesheet_project_sheet_my_timesheets" id="menu_act_hr_timesheet_project_sheet_my_timesheets" parent="menu_hr_project_timesheet_root"
              sequence="3"/>
