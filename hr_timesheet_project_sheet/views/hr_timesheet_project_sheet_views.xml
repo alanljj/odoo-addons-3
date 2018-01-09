@@ -91,7 +91,7 @@
                                     <field name="time_stop" widget="float_time"/>
                                     <field name="unit_amount" widget="float_time" string="Hours" sum="Hours"/>
                                     <field name="employee_category"/>
-                                    <field name="user_id" domain="[('employee_ids.category_ids', 'in', employee_category)]" />
+                                    <field name="user_id" domain="[('employee_ids.category_ids', 'in', employee_category)]" string="Employee"/>
                                     <field name="project_id" invisible="1"/>
                                 </tree>
                                 <form string="Timesheet Activities">
@@ -102,7 +102,7 @@
                                         <field name="time_stop" widget="float_time"/>
                                         <field name="unit_amount" widget="float_time" string="Hours"/>
                                         <field name="employee_category"/>
-                                        <field name="user_id" domain="[('employee_ids.category_ids', 'in', employee_category)]"/>
+                                        <field name="user_id" domain="[('employee_ids.category_ids', 'in', employee_category)]" string="Employee"/>
                                         <field name="project_id" invisible="1"/>
                                     </group>
                                 </form>
