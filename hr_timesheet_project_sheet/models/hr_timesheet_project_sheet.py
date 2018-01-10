@@ -18,32 +18,6 @@ class HrTimesheetSheet(models.Model):
     _order = "id desc"
     _description = "Timesheet"
 
-    #def _default_date_from(self):
-    #    user = self.env['res.users'].browse(self.env.uid)
-    #    r = user.company_id and user.company_id.timesheet_range or 'month'
-    #    if r == 'month':
-    #        return time.strftime('%Y-%m-01')
-    #    elif r == 'week':
-    #        return (datetime.today() + relativedelta(weekday=0, days=-6)).strftime('%Y-%m-%d')
-    #    elif r == 'year':
-    #        return time.strftime('%Y-01-01')
-    #    return fields.Date.context_today(self)
-
-    #def _default_date_to(self):
-    #    user = self.env['res.users'].browse(self.env.uid)
-    #    r = user.company_id and user.company_id.timesheet_range or 'month'
-    #    if r == 'month':
-    #        return (datetime.today() + relativedelta(months=+1, day=1, days=-1)).strftime('%Y-%m-%d')
-    #    elif r == 'week':
-    #        return (datetime.today() + relativedelta(weekday=6)).strftime('%Y-%m-%d')
-    #    elif r == 'year':
-    #        return time.strftime('%Y-12-31')
-    #    return fields.Date.context_today(self)
-
-    #def _default_employee(self):
-    #    emp_ids = self.env['hr.employee'].search([('user_id', '=', self.env.uid)])
-    #    return emp_ids and emp_ids[0] or False
-
     name = fields.Char(string="Event Name", states={'confirm': [('readonly', True)], 'done': [('readonly', True)]}, help="The event name, You may include reference to PO number in this field.")
     project_id = fields.Many2one('project.project', string='Project', required=True, readonly=True, states={'new': [('readonly', False)]})
     date_from = fields.Date(string='Date From', required=True,
@@ -68,52 +42,33 @@ class HrTimesheetSheet(models.Model):
              '\n* The \'Approved\' status is used when the users timesheet is accepted by his/her senior.')
     account_ids = fields.One2many('hr_timesheet_project_sheet.sheet.account', 'project_sheet_id', string='Analytic accounts', readonly=True)
     company_id = fields.Many2one('res.company', string='Company')
-    # Get project_id fields.
     user_id = fields.Many2one('res.users', string='Responsible', required=False, default=lambda self: self.env.user)
     contact_id = fields.Many2one('res.partner', string='Remote Contact', store=True, readonly=False)
     location = fields.Char(string="Location", help="Short description describing the location of the event.", store=True, readonly=False)
 
-    #@api.constrains('date_to', 'date_from', 'employee_id')
-    #def _check_sheet_date(self, forced_user_id=False):
-    #    for sheet in self:
-    #        new_user_id = forced_user_id or sheet.user_id and sheet.user_id.id
-    #        if new_user_id:
-    #            self.env.cr.execute('''
-    #                SELECT id
-    #                FROM hr_timesheet_project_sheet_sheet
-    #                WHERE (date_from <= %s and %s <= date_to)
-    #                    AND user_id=%s
-    #                    AND id <> %s''',
-    #                (sheet.date_to, sheet.date_from, new_user_id, sheet.id))
-    #            if any(self.env.cr.fetchall()):
-    #                raise ValidationError(_('You cannot have 2 timesheets that overlap!\nPlease use the menu \'My Current Timesheet\' to avoid this problem.'))
-
-    #@api.onchange('employee_id')
-    #def onchange_employee_id(self):
-    #    if self.employee_id:
-    #        self.department_id = self.employee_id.department_id
-    #        self.user_id = self.employee_id.user_id
+    @api.constrains('date_to', 'date_from', 'project_id')
+    def _check_sheet_date(self, forced_project_id=False):
+        for sheet in self:
+            new_project_id = forced_project_id or sheet.project_id and sheet.project_id.id
+            if new_project_id:
+                self.env.cr.execute('''
+                    SELECT id
+                    FROM hr_timesheet_project_sheet_sheet
+                    WHERE (date_from <= %s and %s <= date_to)
+                        AND project_id=%s
+                        AND id <> %s''',
+                    (sheet.date_to, sheet.date_from, new_project_id, sheet.id))
+                if any(self.env.cr.fetchall()):
+                    raise ValidationError(_('You cannot have 2 timesheets for the same project that overlap!'))
 
     def copy(self, *args, **argv):
         raise UserError(_('You cannot duplicate a timesheet.'))
 
     @api.model
     def create(self, vals):
-        #if 'employee_id' in vals:
-        #    if not self.env['hr.employee'].browse(vals['employee_id']).user_id:
-        #        raise UserError(_('In order to create a timesheet for this employee, you must link him/her to a user.'))
         res = super(HrTimesheetSheet, self).create(vals)
         res.write({'state': 'draft'})
         return res
-
-    @api.multi
-    def write(self, vals):
-        #if 'employee_id' in vals:
-        #    new_user_id = self.env['hr.employee'].browse(vals['employee_id']).user_id.id
-        #    if not new_user_id:
-        #        raise UserError(_('In order to create a timesheet for this employee, you must link him/her to a user.'))
-        #    self._check_sheet_date(forced_user_id=new_user_id)
-        return super(HrTimesheetSheet, self).write(vals)
 
     @api.multi
     def action_timesheet_draft(self):
@@ -124,9 +79,6 @@ class HrTimesheetSheet(models.Model):
 
     @api.multi
     def action_timesheet_confirm(self):
-        #for sheet in self:
-        #    if sheet.employee_id and sheet.employee_id.parent_id and sheet.employee_id.parent_id.user_id:
-        #        self.message_subscribe_users(user_ids=[sheet.employee_id.parent_id.user_id.id])
         self.write({'state': 'confirm'})
         return True
 
