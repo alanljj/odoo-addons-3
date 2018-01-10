@@ -1,0 +1,142 @@
+<odoo>
+    <template id="report_project_timesheet">
+        <t t-call="report.html_container">
+            <t t-call="report.external_layout">
+
+                <!-- Group by sheets -->
+                <t t-set="sheets" t-value="[]"/>
+                <t t-foreach="docs" t-as="l">
+                    <t t-set="sheets" t-value="sheets+[l.project_sheet_id]" t-if="'project_sheet_id' in l.fields_get() and l.project_sheet_id"/>
+                    <t t-set="sheets" t-value="sheets+[l]" t-if="'timesheet_ids' in l.fields_get() and l.timesheet_ids"/>
+                    
+                </t>
+                
+                <div class="page">
+                    <div class="oe_structure"/>
+                    
+                    <t t-foreach="set(sheets)" t-as="project_sheet_id">
+                        <t t-set="show_task" t-value="bool(project_sheet_id.timesheet_ids.mapped('task_id'))"/>
+                        <t t-set="show_project" t-value="len(project_sheet_id.timesheet_ids.mapped('project_id')) &gt; 1"/>
+                        <h2>
+                            <span t-field="project_sheet_id.project_id.name"/>
+                        </h2>
+                        <h3 t-if="project_sheet_id.name">
+                            <span t-field="project_sheet_id.name"/>
+                        </h3>
+                    
+                        <div class="row mt32 mb32">
+                            <div class="col-xs-4" t-if="project_sheet_id.date_from">
+                                <strong>Timesheet Period</strong>
+                                <p>
+                                <span t-field="project_sheet_id.date_from"/> to 
+                                <span t-field="project_sheet_id.date_to"/>
+                                </p>
+                            </div>
+                            <div class="col-xs-2" t-if="project_sheet_id.location">
+                                <strong>Location</strong>
+                                <p t-field="project_sheet_id.location"/>
+                            </div>
+                            <div class="col-xs-2" t-if="project_sheet_id.user_id">
+                                <strong>Responsible</strong>
+                                <p t-field="project_sheet_id.user_id"/>
+                            </div>
+                            <div class="col-xs-4" t-if="project_sheet_id.contact_id">
+                                <strong>Remote Contact</strong>
+                                <p>
+                                    <span t-field="project_sheet_id.contact_id.name"/>
+                                    <span t-if="project_sheet_id.contact_id.phone">
+                                        <br/><i class="fa fa-phone" aria-hidden="true"/> <span t-field="project_sheet_id.contact_id.phone"/>    
+                                    </span>
+                                    <span t-if="project_sheet_id.contact_id.mobile">
+                                        <br/><i class="fa fa-mobile" aria-hidden="true"/> <span t-field="project_sheet_id.contact_id.mobile"/>
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-12">
+                                <table class="table table-condensed">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Begin - End</th>
+                                            <th>Employee</th>
+                                            <th>Employee Category</th>
+                                            <th>Description</th>
+                                            <th t-if="show_task"><t t-if="show_project">Project - </t>Task</th>
+                                            <th class="text-right">Time</th>
+                                            <th>Initial</th>
+                                        </tr>
+                                   </thead>
+                                   <tbody>
+                                        <t t-foreach="project_sheet_id.timesheet_ids.sorted(key=lambda r: (r.date, r.time_start, r.time_stop))" t-as="l">
+                                            <tr>
+                                                <td>
+                                                   <span t-field="l.date"/>
+                                                </td>
+                                                <td>
+                                                   <span t-esc="'%s:%02.0f' % tuple(int(round(x)) for x in divmod(l.time_start*60,60))"/>
+                                                   to
+                                                   <span t-esc="'%s:%02.0f' % tuple(int(round(x)) for x in divmod(l.time_stop*60,60))"/>
+                                                </td>
+                                                <td>
+                                                   <span t-field="l.user_id.partner_id.name"/>
+                                                </td>
+                                                <td>
+                                                    <span t-field="l.employee_category"/>
+                                                </td>
+                                                <td>
+                                                    <span t-field="l.name"/>
+                                                </td>
+                                                <td t-if="show_task or show_project">
+                                                    <t t-if="show_project"><span t-field="l.project_id.name"/></t>
+                                                    <t t-if="show_project and l.task_id"> - </t>
+                                                    <t t-if="l.task_id"><span t-field="l.task_id.name"/></t>
+                                                </td>
+                                                <td class="text-right">
+                                                    <span t-esc="'%s:%02.0f' % tuple(int(round(x)) for x in divmod(l.unit_amount*60,60))"/>
+                                                </td>
+                                                <td/>
+                                            </tr>
+                                        </t>
+                                        <tr>
+                                            <td/>
+                                            <td/>
+                                            <td/>
+                                            <td/>
+                                            <td t-if="show_task"/>
+                                            <td class="text-right"><strong>Total</strong></td>
+                                            <td class="text-right"><strong t-esc="'%s:%02.0f' % tuple(int(round(x)) for x in divmod(sum(project_sheet_id.timesheet_ids.mapped('unit_amount'))*60,60))"/></td>
+                                            <td/>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                    </t>
+
+                    <div class="oe_structure"/>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <report id="timesheet_project_report_line"
+            model="account.analytic.line"
+            string="Project Timesheet"
+            report_type="qweb-pdf"
+            name="hr_timesheet_project_print.report_project_timesheet"
+            file="report_project_timesheet"
+    />
+    
+    <report id="timesheet_project_report_sheet"
+            model="hr_timesheet_project_sheet.sheet"
+            string="Project Timesheet"
+            report_type="qweb-pdf"
+            name="hr_timesheet_project_print.report_project_timesheet"
+            file="report_project_timesheet"
+    />
+    
+</odoo>
