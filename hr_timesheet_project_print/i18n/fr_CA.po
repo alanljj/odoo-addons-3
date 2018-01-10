@@ -1,0 +1,98 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* hr_timesheet_project_print
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 10.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-01-10 20:46+0000\n"
+"PO-Revision-Date: 2018-01-10 20:46+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: hr_timesheet_project_print
+#: model:ir.ui.view,arch_db:hr_timesheet_project_print.report_project_timesheet
+msgid "<strong>Location</strong>"
+msgstr "<strong>Emplacement</strong>"
+
+#. module: hr_timesheet_project_print
+#: model:ir.ui.view,arch_db:hr_timesheet_project_print.report_project_timesheet
+msgid "<strong>Remote Contact</strong>"
+msgstr "<strong>Contact sur place</strong>"
+
+#. module: hr_timesheet_project_print
+#: model:ir.ui.view,arch_db:hr_timesheet_project_print.report_project_timesheet
+msgid "<strong>Responsible</strong>"
+msgstr "<strong>Responsable</strong>"
+
+#. module: hr_timesheet_project_print
+#: model:ir.ui.view,arch_db:hr_timesheet_project_print.report_project_timesheet
+msgid "<strong>Timesheet Period</strong>"
+msgstr "<strong>Période de la feuille de temps</strong>"
+
+#. module: hr_timesheet_project_print
+#: model:ir.ui.view,arch_db:hr_timesheet_project_print.report_project_timesheet
+msgid "<strong>Total</strong>"
+msgstr "<strong>Total</strong>"
+
+#. module: hr_timesheet_project_print
+#: model:ir.ui.view,arch_db:hr_timesheet_project_print.report_project_timesheet
+msgid "Begin - End"
+msgstr "Début - Fin"
+
+#. module: hr_timesheet_project_print
+#: model:ir.ui.view,arch_db:hr_timesheet_project_print.report_project_timesheet
+msgid "Date"
+msgstr "Date "
+
+#. module: hr_timesheet_project_print
+#: model:ir.ui.view,arch_db:hr_timesheet_project_print.report_project_timesheet
+msgid "Description"
+msgstr "Description"
+
+#. module: hr_timesheet_project_print
+#: model:ir.ui.view,arch_db:hr_timesheet_project_print.report_project_timesheet
+msgid "Employee"
+msgstr "Employé"
+
+#. module: hr_timesheet_project_print
+#: model:ir.ui.view,arch_db:hr_timesheet_project_print.report_project_timesheet
+msgid "Employee Category"
+msgstr "Catégorie d'employé"
+
+#. module: hr_timesheet_project_print
+#: model:ir.ui.view,arch_db:hr_timesheet_project_print.report_project_timesheet
+msgid "Initial"
+msgstr "Initial"
+
+#. module: hr_timesheet_project_print
+#: model:ir.ui.view,arch_db:hr_timesheet_project_print.report_project_timesheet
+msgid "Project -"
+msgstr "Projet -"
+
+#. module: hr_timesheet_project_print
+#: model:ir.actions.report.xml,name:hr_timesheet_project_print.timesheet_project_report_line
+#: model:ir.actions.report.xml,name:hr_timesheet_project_print.timesheet_project_report_sheet
+msgid "Project Timesheet"
+msgstr "Feuilles de temps projet"
+
+#. module: hr_timesheet_project_print
+#: model:ir.ui.view,arch_db:hr_timesheet_project_print.report_project_timesheet
+msgid "Task"
+msgstr "Tâche"
+
+#. module: hr_timesheet_project_print
+#: model:ir.ui.view,arch_db:hr_timesheet_project_print.report_project_timesheet
+msgid "Time"
+msgstr "Heure"
+
+#. module: hr_timesheet_project_print
+#: model:ir.ui.view,arch_db:hr_timesheet_project_print.report_project_timesheet
+msgid "to"
+msgstr "au"
+

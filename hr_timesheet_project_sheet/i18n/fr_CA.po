@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 10.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-09 15:49+0000\n"
-"PO-Revision-Date: 2018-01-09 15:49+0000\n"
+"POT-Creation-Date: 2018-01-10 20:43+0000\n"
+"PO-Revision-Date: 2018-01-10 20:43+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -58,7 +58,7 @@ msgid "Begin Hour"
 msgstr "Heure de début"
 
 #. module: hr_timesheet_project_sheet
-#: code:addons/hr_timesheet_project_sheet/models/hr_timesheet_project_sheet.py:138
+#: code:addons/hr_timesheet_project_sheet/models/hr_timesheet_project_sheet.py:90
 #, python-format
 msgid "Cannot approve a non-submitted timesheet."
 msgstr "Impossible d'approuver une feuille d'heure non transmise."
@@ -209,13 +209,13 @@ msgid "New timesheet to approve."
 msgstr "Nouvelle feuille de temps à approuver."
 
 #. module: hr_timesheet_project_sheet
-#: code:addons/hr_timesheet_project_sheet/models/hr_timesheet_project_sheet.py:136
+#: code:addons/hr_timesheet_project_sheet/models/hr_timesheet_project_sheet.py:88
 #, python-format
 msgid "Only an HR Officer or Manager can approve timesheets."
 msgstr "Only an HR Officer or Manager can approve timesheets."
 
 #. module: hr_timesheet_project_sheet
-#: code:addons/hr_timesheet_project_sheet/models/hr_timesheet_project_sheet.py:121
+#: code:addons/hr_timesheet_project_sheet/models/hr_timesheet_project_sheet.py:76
 #, python-format
 msgid "Only an HR Officer or Manager can refuse timesheets or reset them to draft."
 msgstr "Only an HR Officer or Manager can refuse timesheets or reset them to draft."
@@ -250,7 +250,7 @@ msgstr "Nom du projet"
 #. module: hr_timesheet_project_sheet
 #: model:ir.ui.menu,name:hr_timesheet_project_sheet.menu_hr_project_timesheet_root
 msgid "Project Timesheet"
-msgstr "Project Timesheet"
+msgstr "Feuilles de temps projet"
 
 #. module: hr_timesheet_project_sheet
 #: model:ir.actions.act_window,name:hr_timesheet_project_sheet.act_hr_timesheet_project_sheet_my_timesheets
@@ -271,7 +271,7 @@ msgstr "Refuser"
 #. module: hr_timesheet_project_sheet
 #: model:ir.model.fields,field_description:hr_timesheet_project_sheet.field_hr_timesheet_project_sheet_sheet_contact_id
 msgid "Remote Contact"
-msgstr "Remote Contact"
+msgstr "Contact sur place"
 
 #. module: hr_timesheet_project_sheet
 #: model:ir.model.fields,field_description:hr_timesheet_project_sheet.field_hr_timesheet_project_sheet_sheet_user_id
@@ -441,22 +441,28 @@ msgid "Waiting Approval"
 msgstr "En attente d'approbation"
 
 #. module: hr_timesheet_project_sheet
-#: code:addons/hr_timesheet_project_sheet/models/hr_timesheet_project_sheet.py:144
+#: code:addons/hr_timesheet_project_sheet/models/hr_timesheet_project_sheet.py:96
 #, python-format
 msgid "Week "
 msgstr "Semaine "
 
 #. module: hr_timesheet_project_sheet
-#: code:addons/hr_timesheet_project_sheet/models/hr_timesheet_project_sheet.py:152
+#: code:addons/hr_timesheet_project_sheet/models/hr_timesheet_project_sheet.py:104
 #, python-format
 msgid "You cannot delete a timesheet which is already confirmed."
 msgstr "Vous ne pouvez pas supprimer des feuilles de temps qui sont déjà confirmées."
 
 #. module: hr_timesheet_project_sheet
-#: code:addons/hr_timesheet_project_sheet/models/hr_timesheet_project_sheet.py:98
+#: code:addons/hr_timesheet_project_sheet/models/hr_timesheet_project_sheet.py:65
 #, python-format
 msgid "You cannot duplicate a timesheet."
 msgstr "Vous ne pouvez pas dupliquer une feuille de temps."
+
+#. module: hr_timesheet_project_sheet
+#: code:addons/hr_timesheet_project_sheet/models/hr_timesheet_project_sheet.py:62
+#, python-format
+msgid "You cannot have 2 timesheets for the same project that overlap!"
+msgstr "Vous ne pouvez pas avoir 2 feuilles de temps pour le même projet qui se chevauchent!"
 
 #. module: hr_timesheet_project_sheet
 #: code:addons/hr_timesheet_project_sheet/models/account_analytic_line.py:84
@@ -479,7 +485,7 @@ msgstr "Vous devez remplir votre feuille de temps chaque jour, et les confirmer\
 #: code:addons/hr_timesheet_project_sheet/static/src/xml/timesheet.xml:58
 #, python-format
 msgid "You will be able to register working hours and activities."
-msgstr "You will be able to register working hours and activities."
+msgstr "Vous serez en mesure d'enregistrer les heures de travail et les activités."
 
 #. module: hr_timesheet_project_sheet
 #: model:ir.model,name:hr_timesheet_project_sheet.model_hr_timesheet_current_open
