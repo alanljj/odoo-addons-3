@@ -89,6 +89,7 @@
                                     <field name="name"/>
                                     <field name="time_start" widget="float_time"/>
                                     <field name="time_stop" widget="float_time"/>
+                                    <field name="time_break" widget="float_time"/>
                                     <field name="unit_amount" widget="float_time" string="Hours" sum="Hours"/>
                                     <field name="employee_category"/>
                                     <field name="user_id" domain="[('employee_ids.category_ids', 'in', employee_category)]" string="Employee"/>
@@ -100,6 +101,7 @@
                                         <field name="name"/>
                                         <field name="time_start" widget="float_time"/>
                                         <field name="time_stop" widget="float_time"/>
+                                        <field name="time_break" widget="float_time"/>
                                         <field name="unit_amount" widget="float_time" string="Hours"/>
                                         <field name="employee_category"/>
                                         <field name="user_id" domain="[('employee_ids.category_ids', 'in', employee_category)]" string="Employee"/>

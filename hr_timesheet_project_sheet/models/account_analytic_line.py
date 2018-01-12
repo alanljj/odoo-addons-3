@@ -23,7 +23,6 @@ from __future__ import division
 from datetime import timedelta
 import math
 
-from odoo import api, fields, models, _
 from odoo import models, fields, api, exceptions, _
 from odoo.exceptions import UserError
 from odoo.tools.float_utils import float_compare
@@ -51,8 +50,9 @@ class AccountAnalyticLine(models.Model):
     project_sheet_id = fields.Many2one('hr_timesheet_project_sheet.sheet', compute='_compute_sheet', string='Sheet', store=True)
     project_id = fields.Many2one(default=_default_project)
     employee_category = fields.Many2one(comodel_name='hr.employee.category', string="Employee Category")
-    time_start = fields.Float(string='Begin Hour')
-    time_stop = fields.Float(string='End Hour')
+    time_start = fields.Float(string='Begin', help='Begin time when the employee start working. This value will be used to compute the total number of hours worked.')
+    time_stop = fields.Float(string='End', help='End time when the employee stop working. This value will be used to compute the total number of hours worked.')
+    time_break = fields.Float(string='Break', help='Break time taken by the employee. This value will be used to compute the total number of hours worked.')
 
     @api.depends('date', 'user_id', 'project_id', 'project_sheet_id_computed.date_to', 'project_sheet_id_computed.date_from', 'project_sheet_id_computed.project_id')
     def _compute_sheet(self):
@@ -102,12 +102,12 @@ class AccountAnalyticLine(models.Model):
                 raise UserError(_('You cannot modify an entry in a confirmed timesheet.'))
         return True
 
-
     @api.one
     @api.constrains('time_start', 'time_stop', 'unit_amount')
     def _check_time_start_stop(self):
         start = timedelta(hours=self.time_start)
         stop = timedelta(hours=self.time_stop)
+        tbreak = timedelta(hours=self.time_break)
         if stop < start:
             raise exceptions.ValidationError(
                 _('The beginning hour (%s) must '
@@ -115,7 +115,7 @@ class AccountAnalyticLine(models.Model):
                 (float_time_convert(self.time_start),
                  float_time_convert(self.time_stop))
             )
-        hours = (stop - start).seconds / 3600
+        hours = (stop - start - tbreak).seconds / 3600
         if (hours and
                 float_compare(hours, self.unit_amount, precision_digits=4)):
             raise exceptions.ValidationError(
@@ -143,13 +143,14 @@ class AccountAnalyticLine(models.Model):
                                   )])
             raise exceptions.ValidationError(message)
 
-    @api.onchange('time_start', 'time_stop')
+    @api.onchange('time_start', 'time_stop', 'time_break')
     def onchange_hours_start_stop(self):
         start = timedelta(hours=self.time_start)
         stop = timedelta(hours=self.time_stop)
+        tbreak = timedelta(hours=self.time_break)
         if stop < start:
             return
-        self.unit_amount = (stop - start).seconds / 3600
+        self.unit_amount = (stop - start - tbreak).seconds / 3600
 
     #@api.onchange('employee_category')
     #def onchange_place(self):

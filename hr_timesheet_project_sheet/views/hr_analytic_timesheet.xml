@@ -9,6 +9,7 @@
           <field name="unit_amount" position="before">
             <field name="time_start" widget="float_time"/>
             <field name="time_stop" widget="float_time"/>
+            <field name="time_break" widget="float_time"/>
           </field>
         </field>
     </record>

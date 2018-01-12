@@ -92,3 +92,14 @@ class TestBeginEnd(common.TransactionCase):
         line3.update({'time_start': 8., 'time_stop': 15, 'unit_amount': 7.})
         with self.assertRaisesRegexp(exceptions.ValidationError, message_re):
             self.timesheet_line_model.create(line3)
+
+    def test_check_time_break(self):
+        # Check if the time_break is used to compute the final unit amount.
+        line = self.timesheet_line_model.new({
+            'name': 'test',
+            'time_start': 9.,
+            'time_stop': 16.,
+            'time_break': .5,
+        })
+        line.onchange_hours_start_stop()
+        self.assertEquals(line.unit_amount, 6.5)
