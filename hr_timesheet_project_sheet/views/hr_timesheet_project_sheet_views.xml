@@ -86,7 +86,7 @@
                             <field context="{'default_project_id': project_id, 'default_name': '/', 'default_date': date_from}" name="timesheet_ids" nolabel="1">
                                 <tree editable="bottom" string="Timesheet Activities">
                                     <field name="date"/>
-                                    <field name="name"/>
+                                    <field name="name" invisible="1"/>
                                     <field name="time_start" widget="float_time"/>
                                     <field name="time_stop" widget="float_time"/>
                                     <field name="time_break" widget="float_time"/>
@@ -98,7 +98,7 @@
                                 <form string="Timesheet Activities">
                                     <group>
                                         <field name="date"/>
-                                        <field name="name"/>
+                                        <field name="name" invisible="1"/>
                                         <field name="time_start" widget="float_time"/>
                                         <field name="time_stop" widget="float_time"/>
                                         <field name="time_break" widget="float_time"/>

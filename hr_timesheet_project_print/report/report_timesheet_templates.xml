@@ -15,8 +15,6 @@
                     <div class="oe_structure"/>
                     
                     <t t-foreach="set(sheets)" t-as="project_sheet_id">
-                        <t t-set="show_task" t-value="bool(project_sheet_id.timesheet_ids.mapped('task_id'))"/>
-                        <t t-set="show_project" t-value="len(project_sheet_id.timesheet_ids.mapped('project_id')) &gt; 1"/>
                         <h2>
                             <span t-field="project_sheet_id.project_id.name"/>
                         </h2>
@@ -64,8 +62,6 @@
                                             <th>Employee Category</th>
                                             <th>Begin - End</th>
                                             <th>Break</th>
-                                            <th>Description</th>
-                                            <th t-if="show_task"><t t-if="show_project">Project - </t>Task</th>
                                             <th class="text-right">Time</th>
                                             <th>Initial</th>
                                         </tr>
@@ -90,14 +86,6 @@
                                                 <td>
                                                     <span t-esc="'%s:%02.0f' % tuple(int(round(x)) for x in divmod(l.time_break*60,60))"/>
                                                 </td>
-                                                <td>
-                                                    <span t-field="l.name"/>
-                                                </td>
-                                                <td t-if="show_task or show_project">
-                                                    <t t-if="show_project"><span t-field="l.project_id.name"/></t>
-                                                    <t t-if="show_project and l.task_id"> - </t>
-                                                    <t t-if="l.task_id"><span t-field="l.task_id.name"/></t>
-                                                </td>
                                                 <td class="text-right">
                                                     <span t-esc="'%s:%02.0f' % tuple(int(round(x)) for x in divmod(l.unit_amount*60,60))"/>
                                                 </td>
@@ -109,7 +97,6 @@
                                             <td/>
                                             <td/>
                                             <td/>
-                                            <td t-if="show_task"/>
                                             <td class="text-right"><strong>Total</strong></td>
                                             <td class="text-right"><strong t-esc="'%s:%02.0f' % tuple(int(round(x)) for x in divmod(sum(project_sheet_id.timesheet_ids.mapped('unit_amount'))*60,60))"/></td>
                                             <td/>
