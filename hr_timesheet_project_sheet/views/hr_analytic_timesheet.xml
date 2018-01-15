@@ -6,6 +6,9 @@
         <field name="model">account.analytic.line</field>
         <field name="inherit_id" ref="hr_timesheet.hr_timesheet_line_tree"/>
         <field name="arch" type="xml">
+          <field name="user_id" position="before">
+            <field name="employee_category"/>
+          </field>
           <field name="unit_amount" position="before">
             <field name="time_start" widget="float_time"/>
             <field name="time_stop" widget="float_time"/>
