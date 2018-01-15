@@ -28,7 +28,15 @@
                             </div>
                             <div class="col-xs-2" t-if="project_sheet_id.user_id">
                                 <strong>Responsible</strong>
-                                <p t-field="project_sheet_id.user_id"/>
+                                <p>
+                                    <span t-field="project_sheet_id.user_id.name"/>
+                                    <span t-if="project_sheet_id.user_id.phone">
+                                        <br/><i class="fa fa-phone" aria-hidden="true"/> <span t-field="project_sheet_id.user_id.phone"/>    
+                                    </span>
+                                    <span t-if="project_sheet_id.user_id.mobile">
+                                        <br/><i class="fa fa-mobile" aria-hidden="true"/> <span t-field="project_sheet_id.user_id.mobile"/>
+                                    </span>
+                                </p>
                             </div>
                             <div class="col-xs-4" t-if="project_sheet_id.contact_id">
                                 <strong>Remote Contact</strong>
