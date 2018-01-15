@@ -63,6 +63,7 @@ class HrTimesheetSheet(models.Model):
     user_id = fields.Many2one('res.users', string='Responsible', required=False, default=lambda self: self.env.user)
     contact_id = fields.Many2one('res.partner', string='Remote Contact', store=True, readonly=False)
     location = fields.Char(string="Location", help="Short description describing the location of the event.", store=True, readonly=False)
+    comment = fields.Text('Additional Information', readonly=True, states={'draft': [('readonly', False)], 'new': [('readonly', False)]})
 
     @api.constrains('date_to', 'date_from', 'project_id')
     def _check_sheet_date(self, forced_project_id=False):

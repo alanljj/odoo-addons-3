@@ -74,9 +74,9 @@
                             <label for="date_from" string="Timesheet Period"/>
                             <div><field name="date_from" class="oe_inline"/> to <field name="date_to" class="oe_inline"/></div>
                             <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="location" />
                         </group>
                         <group>
-                            <field name="location" />
                             <field name="user_id" />
                             <field name="contact_id" />
                         </group>
@@ -115,6 +115,10 @@
                             </widget>
                         </page>
                     </notebook>
+                    <div>
+                        <label for="comment"/>
+                        <field name="comment" placeholder="Additional notes..."/>
+                    </div>
                 </sheet>
                 <div class="oe_chatter">
                     <field name="message_follower_ids" widget="mail_followers"/>

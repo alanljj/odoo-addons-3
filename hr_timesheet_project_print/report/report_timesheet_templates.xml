@@ -98,6 +98,15 @@
                             </div>
                         </div>
                         
+                        <div class="row" t-if="project_sheet_id.comment">
+                            <div class="col-md-12">
+                                <p>
+                                    <strong>Comment:</strong>
+                                    <span t-field="project_sheet_id.comment"/>
+                                </p>
+                            </div>
+                        </div>
+
                     </t>
 
                     <div class="oe_structure"/>
