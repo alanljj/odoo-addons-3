@@ -6,14 +6,19 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 10.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-10 20:46+0000\n"
-"PO-Revision-Date: 2018-01-10 20:46+0000\n"
+"POT-Creation-Date: 2018-01-15 18:34+0000\n"
+"PO-Revision-Date: 2018-01-15 18:34+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
+
+#. module: hr_timesheet_project_print
+#: model:ir.ui.view,arch_db:hr_timesheet_project_print.report_project_timesheet
+msgid "<strong>Comment:</strong>"
+msgstr "<strong>Commentaire:</strong>"
 
 #. module: hr_timesheet_project_print
 #: model:ir.ui.view,arch_db:hr_timesheet_project_print.report_project_timesheet
@@ -47,13 +52,13 @@ msgstr "Début - Fin"
 
 #. module: hr_timesheet_project_print
 #: model:ir.ui.view,arch_db:hr_timesheet_project_print.report_project_timesheet
-msgid "Date"
-msgstr "Date "
+msgid "Break"
+msgstr "Pause"
 
 #. module: hr_timesheet_project_print
 #: model:ir.ui.view,arch_db:hr_timesheet_project_print.report_project_timesheet
-msgid "Description"
-msgstr "Description"
+msgid "Date"
+msgstr "Date "
 
 #. module: hr_timesheet_project_print
 #: model:ir.ui.view,arch_db:hr_timesheet_project_print.report_project_timesheet
@@ -71,20 +76,9 @@ msgid "Initial"
 msgstr "Initial"
 
 #. module: hr_timesheet_project_print
-#: model:ir.ui.view,arch_db:hr_timesheet_project_print.report_project_timesheet
-msgid "Project -"
-msgstr "Projet -"
-
-#. module: hr_timesheet_project_print
-#: model:ir.actions.report.xml,name:hr_timesheet_project_print.timesheet_project_report_line
 #: model:ir.actions.report.xml,name:hr_timesheet_project_print.timesheet_project_report_sheet
 msgid "Project Timesheet"
 msgstr "Feuilles de temps projet"
-
-#. module: hr_timesheet_project_print
-#: model:ir.ui.view,arch_db:hr_timesheet_project_print.report_project_timesheet
-msgid "Task"
-msgstr "Tâche"
 
 #. module: hr_timesheet_project_print
 #: model:ir.ui.view,arch_db:hr_timesheet_project_print.report_project_timesheet

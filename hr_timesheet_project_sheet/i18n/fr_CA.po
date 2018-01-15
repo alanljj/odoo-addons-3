@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 10.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-10 20:43+0000\n"
-"PO-Revision-Date: 2018-01-10 20:43+0000\n"
+"POT-Creation-Date: 2018-01-15 18:26+0000\n"
+"PO-Revision-Date: 2018-01-15 18:26+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -25,11 +25,14 @@ msgstr "* Le statut \"Ouverte\" est utilisé quand un utilisateur enregistre une
 "* Le statut \"Approuvé\" est utilisé lorsque la feuille de temps est validée par son/sa responsable."
 
 #. module: hr_timesheet_project_sheet
-#. openerp-web
-#: code:addons/hr_timesheet_project_sheet/static/src/xml/timesheet.xml:39
-#, python-format
-msgid "Add a Line"
-msgstr "Ajouter une ligne"
+#: model:ir.model.fields,field_description:hr_timesheet_project_sheet.field_hr_timesheet_project_sheet_sheet_comment
+msgid "Additional Information"
+msgstr "Informations additionnelles"
+
+#. module: hr_timesheet_project_sheet
+#: model:ir.ui.view,arch_db:hr_timesheet_project_sheet.hr_timesheet_project_sheet_form
+msgid "Additional notes..."
+msgstr "Notes supplémentaires..."
 
 #. module: hr_timesheet_project_sheet
 #: model:ir.model,name:hr_timesheet_project_sheet.model_account_analytic_line
@@ -54,18 +57,33 @@ msgstr "Confirmé par responsable"
 
 #. module: hr_timesheet_project_sheet
 #: model:ir.model.fields,field_description:hr_timesheet_project_sheet.field_account_analytic_line_time_start
-msgid "Begin Hour"
-msgstr "Heure de début"
+msgid "Begin"
+msgstr "Début"
 
 #. module: hr_timesheet_project_sheet
-#: code:addons/hr_timesheet_project_sheet/models/hr_timesheet_project_sheet.py:90
+#: model:ir.model.fields,help:hr_timesheet_project_sheet.field_account_analytic_line_time_start
+msgid "Begin time when the employee start working. This value will be used to compute the total number of hours worked."
+msgstr "Le moment où l'employé commence à travailler. Cette valeur sera utilisée pour calculer le nombre total d'heures travaillées."
+
+#. module: hr_timesheet_project_sheet
+#: model:ir.model.fields,field_description:hr_timesheet_project_sheet.field_account_analytic_line_time_break
+msgid "Break"
+msgstr "Pause"
+
+#. module: hr_timesheet_project_sheet
+#: model:ir.model.fields,help:hr_timesheet_project_sheet.field_account_analytic_line_time_break
+msgid "Break time taken by the employee. This value will be used to compute the total number of hours worked."
+msgstr "Temps de pause pris par l'employé. Cette valeur sera utilisée pour calculer le nombre total d'heures travaillées."
+
+#. module: hr_timesheet_project_sheet
+#: code:addons/hr_timesheet_project_sheet/models/hr_timesheet_project_sheet.py:109
 #, python-format
 msgid "Cannot approve a non-submitted timesheet."
 msgstr "Impossible d'approuver une feuille d'heure non transmise."
 
 #. module: hr_timesheet_project_sheet
 #. openerp-web
-#: code:addons/hr_timesheet_project_sheet/static/src/xml/timesheet.xml:57
+#: code:addons/hr_timesheet_project_sheet/static/src/xml/timesheet.xml:46
 #, python-format
 msgid "Click to add employee."
 msgstr "Cliquez pour ajouter un employé."
@@ -81,13 +99,11 @@ msgid "Confirmed Timesheets"
 msgstr "Feuilles de temps confirmées"
 
 #. module: hr_timesheet_project_sheet
-#: model:ir.model.fields,field_description:hr_timesheet_project_sheet.field_hr_timesheet_current_open_create_uid
 #: model:ir.model.fields,field_description:hr_timesheet_project_sheet.field_hr_timesheet_project_sheet_sheet_create_uid
 msgid "Created by"
 msgstr "Créé par"
 
 #. module: hr_timesheet_project_sheet
-#: model:ir.model.fields,field_description:hr_timesheet_project_sheet.field_hr_timesheet_current_open_create_date
 #: model:ir.model.fields,field_description:hr_timesheet_project_sheet.field_hr_timesheet_project_sheet_sheet_create_date
 msgid "Created on"
 msgstr "Créé le"
@@ -113,7 +129,6 @@ msgid "Details"
 msgstr "Détails"
 
 #. module: hr_timesheet_project_sheet
-#: model:ir.model.fields,field_description:hr_timesheet_project_sheet.field_hr_timesheet_current_open_display_name
 #: model:ir.model.fields,field_description:hr_timesheet_project_sheet.field_hr_timesheet_project_sheet_sheet_account_display_name
 #: model:ir.model.fields,field_description:hr_timesheet_project_sheet.field_hr_timesheet_project_sheet_sheet_display_name
 msgid "Display Name"
@@ -131,8 +146,13 @@ msgstr "Catégorie d'employé"
 
 #. module: hr_timesheet_project_sheet
 #: model:ir.model.fields,field_description:hr_timesheet_project_sheet.field_account_analytic_line_time_stop
-msgid "End Hour"
-msgstr "Heure de fin"
+msgid "End"
+msgstr "Fin"
+
+#. module: hr_timesheet_project_sheet
+#: model:ir.model.fields,help:hr_timesheet_project_sheet.field_account_analytic_line_time_stop
+msgid "End time when the employee stop working. This value will be used to compute the total number of hours worked."
+msgstr "Heure de fin lorsque l'employé cesse de travailler. Cette valeur sera utilisée pour calculer le nombre total d'heures travaillées."
 
 #. module: hr_timesheet_project_sheet
 #: model:ir.model.fields,field_description:hr_timesheet_project_sheet.field_hr_timesheet_project_sheet_sheet_name
@@ -150,7 +170,6 @@ msgid "Hours"
 msgstr "Heures"
 
 #. module: hr_timesheet_project_sheet
-#: model:ir.model.fields,field_description:hr_timesheet_project_sheet.field_hr_timesheet_current_open_id
 #: model:ir.model.fields,field_description:hr_timesheet_project_sheet.field_hr_timesheet_project_sheet_sheet_account_id
 #: model:ir.model.fields,field_description:hr_timesheet_project_sheet.field_hr_timesheet_project_sheet_sheet_id
 msgid "ID"
@@ -162,26 +181,23 @@ msgid "In Draft"
 msgstr "A l'état \"Brouillon\""
 
 #. module: hr_timesheet_project_sheet
-#: model:ir.model.fields,field_description:hr_timesheet_project_sheet.field_hr_timesheet_current_open___last_update
 #: model:ir.model.fields,field_description:hr_timesheet_project_sheet.field_hr_timesheet_project_sheet_sheet___last_update
 #: model:ir.model.fields,field_description:hr_timesheet_project_sheet.field_hr_timesheet_project_sheet_sheet_account___last_update
 msgid "Last Modified on"
 msgstr "Dernière Modification le"
 
 #. module: hr_timesheet_project_sheet
-#: model:ir.model.fields,field_description:hr_timesheet_project_sheet.field_hr_timesheet_current_open_write_uid
 #: model:ir.model.fields,field_description:hr_timesheet_project_sheet.field_hr_timesheet_project_sheet_sheet_write_uid
 msgid "Last Updated by"
 msgstr "Dernière mise à jour par"
 
 #. module: hr_timesheet_project_sheet
-#: model:ir.model.fields,field_description:hr_timesheet_project_sheet.field_hr_timesheet_current_open_write_date
 #: model:ir.model.fields,field_description:hr_timesheet_project_sheet.field_hr_timesheet_project_sheet_sheet_write_date
 msgid "Last Updated on"
 msgstr "Dernière mise à jour le"
 
 #. module: hr_timesheet_project_sheet
-#: code:addons/hr_timesheet_project_sheet/models/account_analytic_line.py:118
+#: code:addons/hr_timesheet_project_sheet/models/account_analytic_line.py:136
 #, python-format
 msgid "Lines can't overlap:\n"
 ""
@@ -191,7 +207,7 @@ msgstr "Lines can't overlap:\n"
 #. module: hr_timesheet_project_sheet
 #: model:ir.model.fields,field_description:hr_timesheet_project_sheet.field_hr_timesheet_project_sheet_sheet_location
 msgid "Location"
-msgstr "Location"
+msgstr "Emplacement"
 
 #. module: hr_timesheet_project_sheet
 #: model:ir.actions.server,name:hr_timesheet_project_sheet.ir_actions_server_timesheet_sheet
@@ -209,27 +225,21 @@ msgid "New timesheet to approve."
 msgstr "Nouvelle feuille de temps à approuver."
 
 #. module: hr_timesheet_project_sheet
-#: code:addons/hr_timesheet_project_sheet/models/hr_timesheet_project_sheet.py:88
+#: code:addons/hr_timesheet_project_sheet/models/hr_timesheet_project_sheet.py:107
 #, python-format
 msgid "Only an HR Officer or Manager can approve timesheets."
-msgstr "Only an HR Officer or Manager can approve timesheets."
+msgstr "Seul un responsable des ressources humaines ou un responsable peut approuver les feuilles de temps."
 
 #. module: hr_timesheet_project_sheet
-#: code:addons/hr_timesheet_project_sheet/models/hr_timesheet_project_sheet.py:76
+#: code:addons/hr_timesheet_project_sheet/models/hr_timesheet_project_sheet.py:95
 #, python-format
 msgid "Only an HR Officer or Manager can refuse timesheets or reset them to draft."
-msgstr "Only an HR Officer or Manager can refuse timesheets or reset them to draft."
+msgstr "Seul un responsable des ressources humaines ou un responsable peut refuser les feuilles de temps ou les réinitialiser pour les rédiger."
 
 #. module: hr_timesheet_project_sheet
 #: selection:hr_timesheet_project_sheet.sheet,state:0
 msgid "Open"
 msgstr "Ouvertes"
-
-#. module: hr_timesheet_project_sheet
-#: code:addons/hr_timesheet_project_sheet/wizard/hr_timesheet_current.py:25
-#, python-format
-msgid "Open Timesheet"
-msgstr "Ouvrir les feuilles de temps"
 
 #. module: hr_timesheet_project_sheet
 #: model:ir.model,name:hr_timesheet_project_sheet.model_project_project
@@ -250,7 +260,7 @@ msgstr "Nom du projet"
 #. module: hr_timesheet_project_sheet
 #: model:ir.ui.menu,name:hr_timesheet_project_sheet.menu_hr_project_timesheet_root
 msgid "Project Timesheet"
-msgstr "Feuilles de temps projet"
+msgstr "Feuille de temps projet"
 
 #. module: hr_timesheet_project_sheet
 #: model:ir.actions.act_window,name:hr_timesheet_project_sheet.act_hr_timesheet_project_sheet_my_timesheets
@@ -303,7 +313,7 @@ msgstr "Feuille"
 #. module: hr_timesheet_project_sheet
 #: model:ir.model.fields,help:hr_timesheet_project_sheet.field_hr_timesheet_project_sheet_sheet_location
 msgid "Short description describing the location of the event."
-msgstr "Short description describing the location of the event."
+msgstr "Brève description décrivant l'emplacement de l'événement."
 
 #. module: hr_timesheet_project_sheet
 #: model:ir.model.fields,field_description:hr_timesheet_project_sheet.field_hr_timesheet_project_sheet_sheet_state
@@ -321,21 +331,21 @@ msgid "Summary"
 msgstr "Résumé"
 
 #. module: hr_timesheet_project_sheet
-#: code:addons/hr_timesheet_project_sheet/models/account_analytic_line.py:95
+#: code:addons/hr_timesheet_project_sheet/models/account_analytic_line.py:113
 #, python-format
 msgid "The beginning hour (%s) must precede the ending hour (%s)."
-msgstr "The beginning hour (%s) must precede the ending hour (%s)."
+msgstr "L'heure de début (%s) doit précéder l'heure de fin (%s)."
 
 #. module: hr_timesheet_project_sheet
-#: code:addons/hr_timesheet_project_sheet/models/account_analytic_line.py:104
+#: code:addons/hr_timesheet_project_sheet/models/account_analytic_line.py:122
 #, python-format
 msgid "The duration (%s) must be equal to the difference between the hours (%s)."
-msgstr "The duration (%s) must be equal to the difference between the hours (%s)."
+msgstr "La durée (%s) doit être égale à la différence entre les heures (%s)."
 
 #. module: hr_timesheet_project_sheet
 #: model:ir.model.fields,help:hr_timesheet_project_sheet.field_hr_timesheet_project_sheet_sheet_name
 msgid "The event name, You may include reference to PO number in this field."
-msgstr "The event name, You may include reference to PO number in this field."
+msgstr "Le nom de l'événement, Vous pouvez inclure une référence au numéro de bon de commande dans ce champ."
 
 #. module: hr_timesheet_project_sheet
 #: model:ir.model,name:hr_timesheet_project_sheet.model_hr_timesheet_project_sheet_sheet
@@ -351,7 +361,7 @@ msgstr "Activités de la feuille de temps"
 #. module: hr_timesheet_project_sheet
 #: model:ir.ui.menu,name:hr_timesheet_project_sheet.menu_hr_activity_analysis
 msgid "Timesheet Analysis"
-msgstr "Timesheet Analysis"
+msgstr "Analyse de feuille de temps"
 
 #. module: hr_timesheet_project_sheet
 #: model:ir.ui.view,arch_db:hr_timesheet_project_sheet.hr_timesheet_project_sheet_form
@@ -412,7 +422,7 @@ msgstr "À approuver"
 #. module: hr_timesheet_project_sheet
 #. openerp-web
 #: code:addons/hr_timesheet_project_sheet/static/src/xml/timesheet.xml:14
-#: code:addons/hr_timesheet_project_sheet/static/src/xml/timesheet.xml:42
+#: code:addons/hr_timesheet_project_sheet/static/src/xml/timesheet.xml:31
 #: model:ir.ui.view,arch_db:hr_timesheet_project_sheet.hr_timesheet_account_form
 #: model:ir.ui.view,arch_db:hr_timesheet_project_sheet.hr_timesheet_account_tree
 #, python-format
@@ -441,31 +451,31 @@ msgid "Waiting Approval"
 msgstr "En attente d'approbation"
 
 #. module: hr_timesheet_project_sheet
-#: code:addons/hr_timesheet_project_sheet/models/hr_timesheet_project_sheet.py:96
+#: code:addons/hr_timesheet_project_sheet/models/hr_timesheet_project_sheet.py:115
 #, python-format
 msgid "Week "
 msgstr "Semaine "
 
 #. module: hr_timesheet_project_sheet
-#: code:addons/hr_timesheet_project_sheet/models/hr_timesheet_project_sheet.py:104
+#: code:addons/hr_timesheet_project_sheet/models/hr_timesheet_project_sheet.py:123
 #, python-format
 msgid "You cannot delete a timesheet which is already confirmed."
 msgstr "Vous ne pouvez pas supprimer des feuilles de temps qui sont déjà confirmées."
 
 #. module: hr_timesheet_project_sheet
-#: code:addons/hr_timesheet_project_sheet/models/hr_timesheet_project_sheet.py:65
+#: code:addons/hr_timesheet_project_sheet/models/hr_timesheet_project_sheet.py:84
 #, python-format
 msgid "You cannot duplicate a timesheet."
 msgstr "Vous ne pouvez pas dupliquer une feuille de temps."
 
 #. module: hr_timesheet_project_sheet
-#: code:addons/hr_timesheet_project_sheet/models/hr_timesheet_project_sheet.py:62
+#: code:addons/hr_timesheet_project_sheet/models/hr_timesheet_project_sheet.py:81
 #, python-format
 msgid "You cannot have 2 timesheets for the same project that overlap!"
 msgstr "Vous ne pouvez pas avoir 2 feuilles de temps pour le même projet qui se chevauchent!"
 
 #. module: hr_timesheet_project_sheet
-#: code:addons/hr_timesheet_project_sheet/models/account_analytic_line.py:84
+#: code:addons/hr_timesheet_project_sheet/models/account_analytic_line.py:102
 #, python-format
 msgid "You cannot modify an entry in a confirmed timesheet."
 msgstr "Vous ne pouvez pas modifier une entrée dans une feuille de temps confirmée."
@@ -482,7 +492,7 @@ msgstr "Vous devez remplir votre feuille de temps chaque jour, et les confirmer\
 
 #. module: hr_timesheet_project_sheet
 #. openerp-web
-#: code:addons/hr_timesheet_project_sheet/static/src/xml/timesheet.xml:58
+#: code:addons/hr_timesheet_project_sheet/static/src/xml/timesheet.xml:47
 #, python-format
 msgid "You will be able to register working hours and activities."
 msgstr "Vous serez en mesure d'enregistrer les heures de travail et les activités."
