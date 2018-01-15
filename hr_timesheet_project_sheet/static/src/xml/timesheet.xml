@@ -4,7 +4,7 @@
         <div class="oe_timesheet_weekly">
             <table class="table table-condensed table-responsive">
                 <tr>
-                    <th class="oe_timesheet_first_col" colspan="3"/>
+                    <th class="oe_timesheet_first_col" colspan="2"/>
                     <t t-foreach="widget.dates" t-as="date">
                         <th t-att-class="'oe_timesheet_weekly_date_head' + (moment().format('DD-MM-YYYY') === moment(date).format('DD-MM-YYYY') ? ' oe_timesheet_weekly_today' : '')">
                             <t t-esc="moment(date).format('ddd')"/><br/>
@@ -15,31 +15,20 @@
                 </tr>
 
 	            <tr t-foreach="widget.employees" t-as="employee">
-	                <td class="oe_timesheet_weekly_account_category" colspan="1"><a href="javascript:void(0)" t-att-data-id="JSON.stringify(employee.employee_category)"><t t-esc="widget.category_names[employee.employee_category]"/></a></td>
-	                <td class="oe_timesheet_weekly_account" colspan="1">
-	                  <a href="javascript:void(0)" t-att-data-id="JSON.stringify(employee.user_id)" t-att-data-employee-category-employee="employee.user_id_category_id" ><t t-esc="widget.employee_names[employee.user_id]"/></a>
-	                </td>
-	                <td></td>
+	                <td class="oe_timesheet_weekly_account" colspan="2"><a href="javascript:void(0)" t-att-data-id="JSON.stringify(employee.user_id)" t-att-data-employee="employee.user_id" ><t t-esc="widget.employee_names[employee.user_id]"/></a></td>
 	                <t t-set="day_count" t-value="0"/>
 	                    <t t-foreach="employee.days" t-as="day">
 	                        <td t-att-class="moment().format('DD-MM-YYYY') === moment(day.day).format('DD-MM-YYYY') ? 'oe_timesheet_weekly_today' : ''">
-	                            <input t-if="!widget.get('effective_readonly')" class="oe_timesheet_weekly_input" t-att-data-employee-category="employee.user_id_category_id"
-	                                   t-att-data-day-count="day_count" type="text"/>
-	                            <span t-if="widget.get('effective_readonly')" t-att-data-employee-category="employee.user_id_category_id"
+	                            <span t-att-data-employee="employee.user_id"
 	                                  t-att-data-day-count="day_count" class="oe_timesheet_weekly_box"/>
 	                            <t t-set="day_count" t-value="day_count + 1"/>
 	                        </td>
 	                    </t>
-	                <td t-att-data-employee-category-total="employee.user_id_category_id" class="oe_timesheet_total"/>
+	                <td t-att-data-employee-total="employee.user_id" class="oe_timesheet_total"/>
 	            </tr>
                 
                 <tr>
-                    <td class="o_add_timesheet_line" colspan="2">
-                        <div>
-                            <button t-if="!widget.get('effective_readonly')" class="btn btn-sm btn-primary oe_edit_only oe_timesheet_button_add">Add a Line</button>
-                        </div>
-                    </td>
-                    <td class="oe_timesheet_total">
+                    <td class="oe_timesheet_total" colspan="2">
                         Total
                     </td>
                     <t t-set="day_count" t-value="0"/>

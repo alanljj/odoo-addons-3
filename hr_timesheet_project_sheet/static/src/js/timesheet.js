@@ -107,14 +107,12 @@ var WeeklyTimesheet = form_common.FormWidget.extend(form_common.ReinitializeWidg
         // it's important to use those vars to avoid race conditions
         var dates;
         var employees;
-        var employees_by_categories;
         var timesheet_lines;
-        var category_names;
         var employee_names;
         var default_get;
         var self = this;
         return this.render_drop.add(new Model("account.analytic.line").call("default_get", [
-            ['account_id','general_account_id','journal_id','date','name','user_id','product_id','product_uom_id','amount','unit_amount','project_id', 'employee_category'],
+            ['account_id','general_account_id','journal_id','date','name','user_id','product_id','product_uom_id','amount','unit_amount','project_id'],
             new data.CompoundContext({'project_id': self.get('project_id')})
         ]).then(function(result) {
             default_get = result;
@@ -132,8 +130,6 @@ var WeeklyTimesheet = form_common.FormWidget.extend(form_common.ReinitializeWidg
 	                // much simpler to use only the id in all cases
 	            	if (typeof(el.user_id) === "object") 
 	                    el.user_id = el.user_id[0];
-	                if (typeof(el.employee_category) === 'object')
-	                    el.employee_category = el.employee_category[0];
 	                return el;
 	            }).value();
             
@@ -141,13 +137,8 @@ var WeeklyTimesheet = form_common.FormWidget.extend(form_common.ReinitializeWidg
             employees = _.groupBy(timesheet_lines, function(el) {
                 return el.user_id;
             });
-            
-            // group by employee and employee_category
-            employees_by_categories = _.groupBy(timesheet_lines, function(el) {
-                return [el.user_id, el.employee_category];
-            });
 
-            employees = _(employees_by_categories).chain().map(function(lines, user_id_category_id) {
+            employees = _(employees).chain().map(function(lines, user_id) {
             	var user_id = lines[0].user_id;
             	var employees_defaults = _.extend({}, default_get, (employees[user_id] || {}).value || {});
                 // group by days
@@ -166,7 +157,6 @@ var WeeklyTimesheet = form_common.FormWidget.extend(form_common.ReinitializeWidg
                             unit_amount: 0,
                             date: time.date_to_str(date),
                             user_id: user_id,
-                            employee_category: lines[0].employee_category,
                         }));
                     }
                     return day;
@@ -182,7 +172,7 @@ var WeeklyTimesheet = form_common.FormWidget.extend(form_common.ReinitializeWidg
                     }
                 }
                 
-                return {user_id_category_id: user_id_category_id, user_id: user_id, days: days, employees_defaults: employees_defaults, employee_category: lines[0].employee_category, partner_id: partner_id};
+                return {user_id: user_id, days: days, employees_defaults: employees_defaults, partner_id: partner_id};
             }).value();
             
             // we need the name_get of the employee
@@ -192,16 +182,8 @@ var WeeklyTimesheet = form_common.FormWidget.extend(form_common.ReinitializeWidg
                 _.each(result, function(el) {
                 	employee_names[el[0]] = el[1];
                 });
-                // we need the name_get of the categories
-                return new Model('hr.employee.category').call('name_get', [_(employees).chain().pluck('employee_category').filter(function(el) { return el; }).value(),
-                    new data.CompoundContext()]).then(function(result) {
-                    	category_names = {};
-                    _.each(result, function(el) {
-                    	category_names[el[0]] = el[1];
-                    });
-                    employees = _.sortBy(employees, function(el) {
-                        return category_names[el.employee_category];
-                    });
+                employees = _.sortBy(employees, function(el) {
+                    return employee_names[el.user_id];
                 });
             });
             
@@ -210,138 +192,25 @@ var WeeklyTimesheet = form_common.FormWidget.extend(form_common.ReinitializeWidg
             self.dates = dates;
             self.employees = employees;
             self.employee_names = employee_names;
-            self.category_names = category_names;
             self.default_get = default_get;
             //real rendering
             self.display_data();
         });
-    },
-    destroy_content: function() {
-        if (this.dfm) {
-            this.dfm.destroy();
-            this.dfm = undefined;
-        }
-    },
-    is_valid_value:function(value){
-        this.view.do_notify_change();
-        var split_value = value.split(":");
-        var valid_value = true;
-        if (split_value.length > 2) {
-            return false;
-        }
-        _.detect(split_value,function(num){
-            if(isNaN(num)) {
-                valid_value = false;
-            }
-        });
-        return valid_value;
     },
     display_data: function() {
         var self = this;
         self.$el.html(QWeb.render("hr_timesheet_project_sheet.WeeklyTimesheet", {widget: self}));
         _.each(self.employees, function(employee) {
             _.each(_.range(employee.days.length), function(day_count) {
-                if (!self.get('effective_readonly')) {
-                    self.get_box(employee, day_count).val(self.sum_box(employee, day_count, true)).change(function() {
-                        var num = $(this).val();
-                        if (self.is_valid_value(num) && num !== 0) {
-                            num = Number(self.parse_client(num));
-                        }
-                        if (isNaN(num)) {
-                            $(this).val(self.sum_box(employee, day_count, true));
-                        } else {
-                        	employee.days[day_count].lines[0].unit_amount += num - self.sum_box(employee, day_count);
-                            var product = (employee.days[day_count].lines[0].product_id instanceof Array) ? employee.days[day_count].lines[0].product_id[0] : employee.days[day_count].lines[0].product_id;
-                            var journal = (employee.days[day_count].lines[0].journal_id instanceof Array) ? employee.days[day_count].lines[0].journal_id[0] : employee.days[day_count].lines[0].journal_id;
-
-                            if(!isNaN($(this).val())){
-                                $(this).val(self.sum_box(employee, day_count, true));
-                            }
-
-                            self.display_totals();
-                            self.sync();
-                        }
-                    });
-                } else {
-                    self.get_box(employee, day_count).html(self.sum_box(employee, day_count, true));
-                }
+                self.get_box(employee, day_count).html(self.sum_box(employee, day_count, true));
             });
         });
         
         self.display_totals();
-        if(!this.get('effective_readonly')) {
-            this.init_add_employee();
-        }
-    },
-    init_add_employee: function() {
-        if (this.dfm) {
-            this.dfm.destroy();
-        }
-
-        var self = this;
-        this.$(".oe_timesheet_weekly_add_row").show();
-        this.dfm = new form_common.DefaultFieldManager(this);
-        this.dfm.extend_field_desc({
-            category: {
-                relation: 'hr.employee.category',
-            },
-        	employee: {
-                relation: "res.users",
-            },
-        });
-        var FieldMany2One = core.form_widget_registry.get('many2one');
-        self.category_m2o = new FieldMany2One(self.dfm, {
-            attrs: {
-                name: 'category',
-                type: 'many2one',
-                modifiers: '{"required": true}',
-            },
-        });
-        this.employee_m2o = new FieldMany2One(this.dfm, {
-            attrs: {
-                name: "employee",
-                type: "many2one",
-                domain: [
-                    ['id', 'not in', _.pluck(this.employees, "user_id")],
-                ],
-                modifiers: '{"required": false}',
-            },
-        });
-
-        this.employee_m2o.prependTo(this.$(".o_add_timesheet_line > div")).then(function() {
-            self.employee_m2o.$el.addClass('oe_edit_only');
-        });
-        self.category_m2o.prependTo(this.$('.o_add_timesheet_line > div')).then(function() {
-            self.category_m2o.$el.addClass('oe_edit_only');
-        });
-        // TODO Need to filter employee based on category.
-        this.$(".oe_timesheet_button_add").click(function() {
-            var category_id = self.category_m2o.get_value();
-            var id = self.employee_m2o.get_value();
-            if (category_id === false) {
-                self.dfm.set({display_invalid_fields: true});
-                return;
-            }
-
-            var ops = self.generate_o2m_value();
-            ops.push(_.extend({}, self.default_get, {
-                name: self.description_line,
-                unit_amount: 0,
-                date: time.date_to_str(self.dates[0]),
-                user_id: id,
-                employee_category: category_id,
-            }));
-
-            self.set({sheets: ops});
-            self.destroy_content();
-        });
     },
     get_box: function(employee, day_count) {
-    	return this.$('[data-employee-category="' + employee.user_id_category_id + '"][data-day-count="' + day_count + '"]');
+    	return this.$('[data-employee="' + employee.user_id + '"][data-day-count="' + day_count + '"]');
     },
-    get_employee_box : function(employee) {
-    	return this.$('[data-employee-category-employee="' + employee.user_id_category_id + '"]');
-    } ,
     sum_box: function(employee, day_count, show_value_in_hour) {
         var line_total = 0;
         _.each(employee.days[day_count].lines, function(line) {
@@ -361,47 +230,16 @@ var WeeklyTimesheet = form_common.FormWidget.extend(form_common.ReinitializeWidg
                 day_tots[day_count] += sum;
                 super_tot += sum;
             });
-            self.$('[data-employee-category-total="' + employee.user_id_category_id + '"]').html(self.format_client(acc_tot));
+            self.$('[data-employee-total="' + employee.user_id + '"]').html(self.format_client(acc_tot));
         });
         _.each(_.range(self.dates.length), function(day_count) {
             self.$('[data-day-total="' + day_count + '"]').html(self.format_client(day_tots[day_count]));
         });
         this.$('.oe_timesheet_weekly_supertotal').html(self.format_client(super_tot));
     },
-    sync: function() {
-        this.setting = true;
-        this.set({sheets: this.generate_o2m_value()});
-        this.setting = false;
-    },
-    //converts hour value to float
-    parse_client: function(value) {
-        return formats.parse_value(value, { type:"float_time" });
-    },
     //converts float value to hour
     format_client:function(value){
         return formats.format_value(value, { type:"float_time" });
-    },
-    generate_o2m_value: function() {
-        var ops = [];
-        var ignored_fields = this.ignore_fields();
-    	_.each(this.employees, function(employee) {
-            _.each(employee.days, function(day) {
-                _.each(day.lines, function(line) {
-                    if (line.unit_amount !== 0) {
-                        var tmp = _.clone(line);
-                        _.each(line, function(v, k) {
-                            if (v instanceof Array) {
-                                tmp[k] = v[0];
-                            }
-                        });
-                        // we remove line_id as the reference to the _inherits field will no longer exists
-                        tmp = _.omit(tmp, ignored_fields);
-                        ops.push(tmp);
-                    }
-                });
-            });
-        });
-        return ops;
     },
 });
 
