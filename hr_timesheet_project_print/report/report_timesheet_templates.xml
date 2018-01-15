@@ -3,18 +3,10 @@
         <t t-call="report.html_container">
             <t t-call="report.external_layout">
 
-                <!-- Group by sheets -->
-                <t t-set="sheets" t-value="[]"/>
-                <t t-foreach="docs" t-as="l">
-                    <t t-set="sheets" t-value="sheets+[l.project_sheet_id]" t-if="'project_sheet_id' in l.fields_get() and l.project_sheet_id"/>
-                    <t t-set="sheets" t-value="sheets+[l]" t-if="'timesheet_ids' in l.fields_get() and l.timesheet_ids"/>
-                    
-                </t>
-                
                 <div class="page">
                     <div class="oe_structure"/>
                     
-                    <t t-foreach="set(sheets)" t-as="project_sheet_id">
+                    <t t-foreach="set(docs)" t-as="project_sheet_id">
                         <h2>
                             <span t-field="project_sheet_id.project_id.name"/>
                         </h2>
@@ -114,14 +106,6 @@
         </t>
     </template>
 
-    <report id="timesheet_project_report_line"
-            model="account.analytic.line"
-            string="Project Timesheet"
-            report_type="qweb-pdf"
-            name="hr_timesheet_project_print.report_project_timesheet"
-            file="report_project_timesheet"
-    />
-    
     <report id="timesheet_project_report_sheet"
             model="hr_timesheet_project_sheet.sheet"
             string="Project Timesheet"
