@@ -6,47 +6,48 @@
                 <div class="page">
                     <div class="oe_structure"/>
                     
-                    <t t-foreach="set(docs)" t-as="project_sheet_id">
+                    <t t-foreach="docs" t-as="o">
+                        <t t-set="show_draft" t-value="o.state in ['new', 'draft']"/>
                         <h2>
-                            <span t-field="project_sheet_id.project_id.name"/>
+                            <span t-field="o.project_id.name"/>
                         </h2>
-                        <h3 t-if="project_sheet_id.name">
-                            <span t-field="project_sheet_id.name"/>
+                        <h3 t-if="o.name">
+                            <span t-field="o.name"/>
                         </h3>
                     
                         <div class="row mt32 mb32">
-                            <div class="col-xs-4" t-if="project_sheet_id.date_from">
+                            <div class="col-xs-4" t-if="o.date_from">
                                 <strong>Timesheet Period</strong>
                                 <p>
-                                <span t-field="project_sheet_id.date_from"/> to 
-                                <span t-field="project_sheet_id.date_to"/>
+                                <span t-field="o.date_from" t-field-options="{&quot;format&quot;: &quot;d MMM y&quot;}"/> to 
+                                <span t-field="o.date_to" t-field-options="{&quot;format&quot;: &quot;d MMM y&quot;}"/>
                                 </p>
                             </div>
-                            <div class="col-xs-2" t-if="project_sheet_id.location">
+                            <div class="col-xs-2" t-if="o.location">
                                 <strong>Location</strong>
-                                <p t-field="project_sheet_id.location"/>
+                                <p t-field="o.location"/>
                             </div>
-                            <div class="col-xs-2" t-if="project_sheet_id.user_id">
+                            <div class="col-xs-2" t-if="o.user_id">
                                 <strong>Responsible</strong>
                                 <p>
-                                    <span t-field="project_sheet_id.user_id.name"/>
-                                    <span t-if="project_sheet_id.user_id.phone">
-                                        <br/><i class="fa fa-phone" aria-hidden="true"/> <span t-field="project_sheet_id.user_id.phone"/>    
+                                    <span t-field="o.user_id.name"/>
+                                    <span t-if="o.user_id.phone">
+                                        <br/><i class="fa fa-phone" aria-hidden="true"/> <span t-field="o.user_id.phone"/>    
                                     </span>
-                                    <span t-if="project_sheet_id.user_id.mobile">
-                                        <br/><i class="fa fa-mobile" aria-hidden="true"/> <span t-field="project_sheet_id.user_id.mobile"/>
+                                    <span t-if="o.user_id.mobile">
+                                        <br/><i class="fa fa-mobile" aria-hidden="true"/> <span t-field="o.user_id.mobile"/>
                                     </span>
                                 </p>
                             </div>
-                            <div class="col-xs-4" t-if="project_sheet_id.contact_id">
+                            <div class="col-xs-4" t-if="o.contact_id">
                                 <strong>Remote Contact</strong>
                                 <p>
-                                    <span t-field="project_sheet_id.contact_id.name"/>
-                                    <span t-if="project_sheet_id.contact_id.phone">
-                                        <br/><i class="fa fa-phone" aria-hidden="true"/> <span t-field="project_sheet_id.contact_id.phone"/>    
+                                    <span t-field="o.contact_id.name"/>
+                                    <span t-if="o.contact_id.phone">
+                                        <br/><i class="fa fa-phone" aria-hidden="true"/> <span t-field="o.contact_id.phone"/>    
                                     </span>
-                                    <span t-if="project_sheet_id.contact_id.mobile">
-                                        <br/><i class="fa fa-mobile" aria-hidden="true"/> <span t-field="project_sheet_id.contact_id.mobile"/>
+                                    <span t-if="o.contact_id.mobile">
+                                        <br/><i class="fa fa-mobile" aria-hidden="true"/> <span t-field="o.contact_id.mobile"/>
                                     </span>
                                 </p>
                             </div>
@@ -60,17 +61,28 @@
                                             <th>Date</th>
                                             <th>Employee</th>
                                             <th>Employee Category</th>
-                                            <th>Begin - End</th>
-                                            <th>Break</th>
-                                            <th class="text-right">Time</th>
-                                            <th>Initial</th>
+                                            <th class="text-right">Begin - End</th>
+                                            <th class="text-right">Break</th>
+                                            <th class="text-right">Total</th>
+                                            <th class="text-right" t-if="show_draft">Initial</th>
                                         </tr>
                                    </thead>
                                    <tbody>
-                                        <t t-foreach="project_sheet_id.timesheet_ids.sorted(key=lambda r: (r.date, r.time_start, r.time_stop))" t-as="l">
+                                        <t t-set="prev_timerange" t-value="False"/>
+                                        <t t-foreach="o.timesheet_ids.sorted(key=lambda r: (r.date, r.time_start, r.time_stop))" t-as="l">
+                                            <!--  Group by timerange for display for Draft -->
+                                            <t t-if="show_draft and prev_timerange != (l.date, l.time_start, l.time_stop)">
+                                                <tr><td colspan="7"><strong>
+                                                    <span t-field="l.date" t-field-options="{&quot;format&quot;: &quot;d MMM y&quot;}"/> - 
+                                                    <span t-esc="'%s:%02.0f' % tuple(int(round(x)) for x in divmod(l.time_start*60,60))"/>
+                                                    to
+                                                    <span t-esc="'%s:%02.0f' % tuple(int(round(x)) for x in divmod(l.time_stop*60,60))"/>
+                                                </strong></td></tr>
+                                            </t>
+                                            <t t-set="prev_timerange" t-value="(l.date, l.time_start, l.time_stop)"/>
                                             <tr>
                                                 <td>
-                                                   <span t-field="l.date"/>
+                                                   <span t-if="not show_draft" t-field="l.date" t-field-options="{&quot;format&quot;: &quot;d MMM y&quot;}"/>
                                                 </td>
                                                 <td>
                                                    <span t-field="l.user_id.partner_id.name"/>
@@ -78,39 +90,47 @@
                                                 <td>
                                                     <span t-field="l.employee_category"/>
                                                 </td>
-                                                <td>
-                                                   <span t-esc="'%s:%02.0f' % tuple(int(round(x)) for x in divmod(l.time_start*60,60))"/>
-                                                   to
-                                                   <span t-esc="'%s:%02.0f' % tuple(int(round(x)) for x in divmod(l.time_stop*60,60))"/>
-                                                </td>
-                                                <td>
-                                                    <span t-esc="'%s:%02.0f' % tuple(int(round(x)) for x in divmod(l.time_break*60,60))"/>
+                                                <td class="text-right">
+                                                    <t t-if="not show_draft">
+                                                        <span t-esc="'%s:%02.0f' % tuple(int(round(x)) for x in divmod(l.time_start*60,60))"/>
+                                                        to
+                                                        <span t-esc="'%s:%02.0f' % tuple(int(round(x)) for x in divmod(l.time_stop*60,60))"/>
+                                                    </t>
                                                 </td>
                                                 <td class="text-right">
-                                                    <span t-esc="'%s:%02.0f' % tuple(int(round(x)) for x in divmod(l.unit_amount*60,60))"/>
+                                                    <t t-if="not show_draft">
+                                                        <span t-esc="'%s:%02.0f' % tuple(int(round(x)) for x in divmod(l.time_break*60,60))"/>
+                                                    </t>
                                                 </td>
-                                                <td/>
+                                                <td class="text-right">
+                                                    <t t-if="not show_draft">
+                                                        <span t-esc="'%s:%02.0f' % tuple(int(round(x)) for x in divmod(l.unit_amount*60,60))"/>
+                                                    </t>
+                                                </td>
+                                                <td class="text-right" t-if="show_draft"/>
                                             </tr>
                                         </t>
-                                        <tr>
+                                        <tr t-if="not show_draft">
                                             <td/>
                                             <td/>
                                             <td/>
                                             <td/>
                                             <td class="text-right"><strong>Total</strong></td>
-                                            <td class="text-right"><strong t-esc="'%s:%02.0f' % tuple(int(round(x)) for x in divmod(sum(project_sheet_id.timesheet_ids.mapped('unit_amount'))*60,60))"/></td>
-                                            <td/>
+                                            <td class="text-right"><strong t-esc="'%s:%02.0f' % tuple(int(round(x)) for x in divmod(sum(o.timesheet_ids.mapped('unit_amount'))*60,60))"/></td>
+                                        </tr>
+                                        <tr t-if="show_draft">
+                                            <td colspan="7"/>
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
                         </div>
-                        
-                        <div class="row" t-if="project_sheet_id.comment">
+                                               
+                        <div class="row" t-if="o.comment">
                             <div class="col-md-12">
                                 <p>
                                     <strong>Comment:</strong>
-                                    <span t-field="project_sheet_id.comment"/>
+                                    <span t-field="o.comment"/>
                                 </p>
                             </div>
                         </div>
