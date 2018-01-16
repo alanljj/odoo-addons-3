@@ -83,7 +83,7 @@
                     </group>
                     <notebook>
                         <page string="Details" class="o_hr_timesheet_project_sheet_details">
-                            <field context="{'default_project_id': project_id, 'default_name': '/', 'default_date': date_from}" name="timesheet_ids" nolabel="1">
+                            <field context="{'default_project_id': project_id, 'default_name': '/', 'default_date': date_from, 'default_user_id': None}" name="timesheet_ids" nolabel="1">
                                 <tree editable="bottom" string="Timesheet Activities">
                                     <field name="date"/>
                                     <field name="name" invisible="1"/>
