@@ -510,7 +510,7 @@ msgstr "nouvelle feuille de temps"
 #. module: hr_timesheet_project_sheet
 #: model:ir.ui.view,arch_db:hr_timesheet_project_sheet.hr_timesheet_project_sheet_form
 msgid "to"
-msgstr "au"
+msgstr "à"
 
 #. module: hr_timesheet_project_sheet
 #: model:mail.message.subtype,description:hr_timesheet_project_sheet.mt_timesheet_confirmed
