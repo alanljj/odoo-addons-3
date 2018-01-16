@@ -3,6 +3,14 @@
         <t t-call="report.html_container">
             <t t-call="report.external_layout">
 
+                <!-- Multicompany -->
+                <t t-if="o and 'company_id' in o">
+                    <t t-set="company" t-value="o.company_id"></t>
+                </t>
+                <t t-if="not o or not 'company_id' in o">
+                    <t t-set="company" t-value="res_company"></t>
+                </t>
+
                 <div class="page">
                     <div class="oe_structure"/>
                     
@@ -28,7 +36,7 @@
                                 <p t-field="o.location"/>
                             </div>
                             <div class="col-xs-2" t-if="o.user_id">
-                                <strong>Responsible</strong>
+                                <strong>Responsible <t t-esc='company.name' /></strong>
                                 <p>
                                     <span t-field="o.user_id.name"/>
                                     <span t-if="o.user_id.phone">
@@ -134,7 +142,22 @@
                                 </p>
                             </div>
                         </div>
-
+                        
+                        <div class="row" t-if="show_draft">
+                            <div class="col-xs-6">
+                                <p></p>
+                                <p style="border-top:thin black solid">
+                                    <strong>Signature <t t-esc='company.name' /></strong>
+                                </p>
+                            </div>
+                            <div class="col-xs-6">
+                                <p></p>
+                                <p style="border-top:thin black solid">
+                                    <strong>Signature <t t-esc='o.project_id.partner_id and o.project_id.partner_id.name' /></strong>
+                                </p>
+                            </div>
+                        </div>
+                        
                     </t>
 
                     <div class="oe_structure"/>
