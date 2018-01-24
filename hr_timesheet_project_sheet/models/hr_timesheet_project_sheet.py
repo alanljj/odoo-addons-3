@@ -123,16 +123,14 @@ class HrTimesheetSheet(models.Model):
             message loaded by default.
         """
         self.ensure_one()
-        template = self.env.ref('account.email_template_edi_invoice', False)
+        template = self.env.ref('hr_timesheet_project_sheet.email_template_timesheet', False)
         compose_form = self.env.ref('mail.email_compose_message_wizard_form', False)
         ctx = dict(
-            default_model='account.invoice',
+            default_model='hr_timesheet_project_sheet.sheet',
             default_res_id=self.id,
             default_use_template=bool(template),
             default_template_id=template and template.id or False,
             default_composition_mode='comment',
-            mark_invoice_as_sent=True,
-            custom_layout="account.mail_template_data_notification_email_account_invoice"
         )
         return {
             'name': _('Compose Email'),
