@@ -19,9 +19,7 @@
 #
 ##############################################################################
 
-import time
 from datetime import datetime
-from dateutil.relativedelta import relativedelta
 
 from odoo import api, fields, models
 from odoo.tools.translate import _
@@ -64,6 +62,7 @@ class HrTimesheetSheet(models.Model):
     contact_id = fields.Many2one('res.partner', string='Remote Contact', store=True, readonly=False)
     location = fields.Char(string="Location", help="Short description describing the location of the event.", store=True, readonly=False)
     comment = fields.Text('Additional Information', readonly=True, states={'draft': [('readonly', False)], 'new': [('readonly', False)]})
+    sent = fields.Boolean(readonly=True, default=False, copy=False, help="It indicates that the timesheet has been sent.")
 
     @api.constrains('date_to', 'date_from', 'project_id')
     def _check_sheet_date(self, forced_project_id=False):
@@ -108,6 +107,44 @@ class HrTimesheetSheet(models.Model):
         if self.filtered(lambda sheet: sheet.state != 'confirm'):
             raise UserError(_("Cannot approve a non-submitted timesheet."))
         self.write({'state': 'done'})
+
+    @api.multi
+    def timesheet_print(self):
+        """ Print the timesheet and mark it as sent, so that we can see more
+            easily the next step of the workflow
+        """
+        self.ensure_one()
+        self.sent = True
+        return self.env['report'].get_action(self, 'hr_timesheet_project_sheet.report_project_timesheet')
+
+    @api.multi
+    def action_timesheet_sent(self):
+        """ Open a window to compose an email, with the edit invoice template
+            message loaded by default.
+        """
+        self.ensure_one()
+        template = self.env.ref('account.email_template_edi_invoice', False)
+        compose_form = self.env.ref('mail.email_compose_message_wizard_form', False)
+        ctx = dict(
+            default_model='account.invoice',
+            default_res_id=self.id,
+            default_use_template=bool(template),
+            default_template_id=template and template.id or False,
+            default_composition_mode='comment',
+            mark_invoice_as_sent=True,
+            custom_layout="account.mail_template_data_notification_email_account_invoice"
+        )
+        return {
+            'name': _('Compose Email'),
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'mail.compose.message',
+            'views': [(compose_form.id, 'form')],
+            'view_id': compose_form.id,
+            'target': 'new',
+            'context': ctx,
+        }
 
     @api.multi
     def name_get(self):

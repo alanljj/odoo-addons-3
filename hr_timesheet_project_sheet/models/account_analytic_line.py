@@ -125,23 +125,24 @@ class AccountAnalyticLine(models.Model):
                  float_time_convert(hours))
             )
         # check if lines overlap
-        others = self.search([
-            ('id', '!=', self.id),
-            ('user_id', '=', self.user_id.id),
-            ('date', '=', self.date),
-            ('time_start', '<', self.time_stop),
-            ('time_stop', '>', self.time_start),
-        ])
-        if others:
-            message = _("Lines can't overlap:\n")
-            message += '\n'.join(['%s - %s' %
-                                  (float_time_convert(line.time_start),
-                                   float_time_convert(line.time_stop))
-                                  for line
-                                  in (self + others).sorted(
-                                      lambda l: l.time_start
-                                  )])
-            raise exceptions.ValidationError(message)
+        if self.user_id:
+            others = self.search([
+                ('id', '!=', self.id),
+                ('user_id', '=', self.user_id.id),
+                ('date', '=', self.date),
+                ('time_start', '<', self.time_stop),
+                ('time_stop', '>', self.time_start),
+            ])
+            if others:
+                message = _("Lines can't overlap:\n")
+                message += '\n'.join(['%s - %s' %
+                                      (float_time_convert(line.time_start),
+                                       float_time_convert(line.time_stop))
+                                      for line
+                                      in (self + others).sorted(
+                                          lambda l: l.time_start
+                                      )])
+                raise exceptions.ValidationError(message)
 
     @api.onchange('time_start', 'time_stop', 'time_break')
     def onchange_hours_start_stop(self):

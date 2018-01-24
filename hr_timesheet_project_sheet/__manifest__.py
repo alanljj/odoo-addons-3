@@ -35,7 +35,9 @@
     'data': [
         'security/ir.model.access.csv',
         'security/hr_timesheet_project_sheet_security.xml',
+        "report/report_timesheet_templates.xml",
         'data/hr_timesheet_project_sheet_data.xml',
+        'data/hr_timesheet_action_data.xml',
         'views/hr_analytic_timesheet.xml',
         'views/hr_timesheet_project_sheet_templates.xml',
         'views/hr_timesheet_project_sheet_views.xml',

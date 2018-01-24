@@ -170,7 +170,7 @@
             model="hr_timesheet_project_sheet.sheet"
             string="Project Timesheet"
             report_type="qweb-pdf"
-            name="hr_timesheet_project_print.report_project_timesheet"
+            name="hr_timesheet_project_sheet.report_project_timesheet"
             file="report_project_timesheet"
     />
     
