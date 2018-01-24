@@ -91,12 +91,12 @@
                             <field context="{'default_project_id': project_id, 'default_name': '/', 'default_date': date_from, 'default_user_id': None}" name="timesheet_ids" nolabel="1">
                                 <tree editable="bottom" default_order="date" string="Timesheet Activities">
                                     <field name="date"/>
-                                    <field name="name" invisible="1"/>
                                     <field name="time_start" widget="float_time"/>
                                     <field name="time_stop" widget="float_time"/>
                                     <field name="time_break" widget="float_time"/>
                                     <field name="unit_amount" widget="float_time" string="Hours" sum="Hours"/>
                                     <field name="employee_category" string="Position"/>
+                                    <field name="name"/>
                                     <field name="user_id" domain="[('employee_ids.category_ids', 'in', employee_category)]" string="Employee"/>
                                     <field name="project_id" invisible="1"/>
                                     <button name="copy" type="object" icon="fa-files-o" />
@@ -104,12 +104,12 @@
                                 <form string="Timesheet Activities">
                                     <group>
                                         <field name="date"/>
-                                        <field name="name" invisible="1"/>
                                         <field name="time_start" widget="float_time"/>
                                         <field name="time_stop" widget="float_time"/>
                                         <field name="time_break" widget="float_time"/>
                                         <field name="unit_amount" widget="float_time" string="Hours"/>
                                         <field name="employee_category" string="Position"/>
+                                        <field name="name"/>
                                         <field name="user_id" domain="[('employee_ids.category_ids', 'in', employee_category)]" string="Employee"/>
                                         <field name="project_id" invisible="1"/>
                                     </group>
