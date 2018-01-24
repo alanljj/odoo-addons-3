@@ -68,7 +68,7 @@
                                         <tr>
                                             <th>Date</th>
                                             <th>Employee</th>
-                                            <th>Employee Category</th>
+                                            <th>Position</th>
                                             <th class="text-right">Begin - End</th>
                                             <th class="text-right">Break</th>
                                             <th class="text-right">Total</th>

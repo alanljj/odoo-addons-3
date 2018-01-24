@@ -96,7 +96,7 @@
                                     <field name="time_stop" widget="float_time"/>
                                     <field name="time_break" widget="float_time"/>
                                     <field name="unit_amount" widget="float_time" string="Hours" sum="Hours"/>
-                                    <field name="employee_category"/>
+                                    <field name="employee_category" string="Position"/>
                                     <field name="user_id" domain="[('employee_ids.category_ids', 'in', employee_category)]" string="Employee"/>
                                     <field name="project_id" invisible="1"/>
                                     <button name="copy" type="object" icon="fa-files-o" />
@@ -109,7 +109,7 @@
                                         <field name="time_stop" widget="float_time"/>
                                         <field name="time_break" widget="float_time"/>
                                         <field name="unit_amount" widget="float_time" string="Hours"/>
-                                        <field name="employee_category"/>
+                                        <field name="employee_category" string="Position"/>
                                         <field name="user_id" domain="[('employee_ids.category_ids', 'in', employee_category)]" string="Employee"/>
                                         <field name="project_id" invisible="1"/>
                                     </group>
