@@ -81,7 +81,7 @@
                             <field name="location" />
                         </group>
                         <group>
-                            <field name="user_id" />
+                            <field name="user_id" domain="[('employee_ids.category_ids', 'in', %(hr_timesheet_project_sheet.employee_category_employee)d)]" />
                             <field name="contact_id" />
                             <field name="sent" invisible="1"/>
                         </group>

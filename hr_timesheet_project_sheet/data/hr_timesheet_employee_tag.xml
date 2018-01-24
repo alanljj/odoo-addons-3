@@ -1,0 +1,9 @@
+<?xml version="1.0" ?>
+<odoo>
+	<data>
+		<record id="employee_category_employee" model="hr.employee.category">
+			<field name="name">Employee</field>
+			<field name="color" eval="6" />
+		</record>
+	</data>
+</odoo>
