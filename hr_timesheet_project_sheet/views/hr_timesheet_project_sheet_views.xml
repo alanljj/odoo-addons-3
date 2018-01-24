@@ -122,8 +122,7 @@
                         </page>
                     </notebook>
                     <div>
-                        <label for="comment"/>
-                        <field name="comment" placeholder="Additional notes..."/>
+                        <field name="comment" placeholder="Terms and conditions..." context="{'default_comment':'COUCOU'}"/>
                     </div>
                 </sheet>
                 <div class="oe_chatter">
