@@ -96,7 +96,7 @@
                                 <thead>
                                     <tr>
                                         <th>Date</th>
-                                        <th>Employee</th>
+                                        <th>Technician</th>
                                         <th>Position</th>
                                         <th>Comments</th>
                                         <th class="text-right">Begin</th>
