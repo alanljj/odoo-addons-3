@@ -70,7 +70,8 @@
                                             <th>Employee</th>
                                             <th>Position</th>
                                             <th>Comments</th>
-                                            <th class="text-right">Begin - End</th>
+                                            <th class="text-right">Begin</th>
+                                            <th class="text-right">End</th>
                                             <th class="text-right">Break</th>
                                             <th class="text-right">Total</th>
                                             <th class="text-right" t-if="show_draft">Initial</th>
@@ -81,7 +82,7 @@
                                         <t t-foreach="o.timesheet_ids.sorted(key=lambda r: (r.date, r.time_start, r.time_stop))" t-as="l">
                                             <!--  Group by timerange for display for Draft -->
                                             <t t-if="show_draft and prev_timerange != (l.date, l.time_start, l.time_stop)">
-                                                <tr><td colspan="8"><strong>
+                                                <tr><td colspan="9"><strong>
                                                     <span t-field="l.date" t-field-options="{&quot;format&quot;: &quot;d MMM y&quot;}"/> - 
                                                     <span t-esc="'%s:%02.0f' % tuple(int(round(x)) for x in divmod(l.time_start*60,60))"/>
                                                     to
@@ -103,11 +104,10 @@
                                                     <span t-if="l.name != '/'" t-field="l.name"/>
                                                 </td>
                                                 <td class="text-right">
-                                                    <t t-if="not show_draft">
-                                                        <span t-esc="'%s:%02.0f' % tuple(int(round(x)) for x in divmod(l.time_start*60,60))"/>
-                                                        to
-                                                        <span t-esc="'%s:%02.0f' % tuple(int(round(x)) for x in divmod(l.time_stop*60,60))"/>
-                                                    </t>
+                                                    <span t-if="not show_draft" t-esc="'%s:%02.0f' % tuple(int(round(x)) for x in divmod(l.time_start*60,60))"/>
+                                                </td>
+                                                <td class="text-right">
+                                                    <span t-if="not show_draft" t-esc="'%s:%02.0f' % tuple(int(round(x)) for x in divmod(l.time_stop*60,60))"/>
                                                 </td>
                                                 <td class="text-right">
                                                     <t t-if="not show_draft">
@@ -128,11 +128,12 @@
                                             <td/>
                                             <td/>
                                             <td/>
+                                            <td/>
                                             <td class="text-right"><strong>Total</strong></td>
                                             <td class="text-right"><strong t-esc="'%s:%02.0f' % tuple(int(round(x)) for x in divmod(sum(o.timesheet_ids.mapped('unit_amount'))*60,60))"/></td>
                                         </tr>
                                         <tr t-if="show_draft">
-                                            <td colspan="8"/>
+                                            <td colspan="9"/>
                                         </tr>
                                     </tbody>
                                 </table>
